@@ -17,7 +17,10 @@ spring:
       maximum-pool-size: 10
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create  # option type: create, create-drop, update, validate, none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57Dialect
@@ -25,3 +28,12 @@ spring:
         format_sql: true
         show-sql: true
         generate-ddl: true
+    open-in-view: false
+
+  logging:
+    level:
+      org:
+        hibernate:
+          type:
+            descriptor:
+              sql: trace  # query의 ?에 어떤 값이 들어가는지 TRACE Log에 값을 보여줌
