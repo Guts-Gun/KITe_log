@@ -1,0 +1,27 @@
+server:
+  port: 8006
+spring:
+  writedb:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://yjhome.kro.kr:3306/log?usessl=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: qwer1234!
+    hikari:
+      maximum-pool-size: 10
+  readdb:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://yjhome.kro.kr:3306/read?usessl=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: qwer1234!
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        storage_engine: innodb
+        format_sql: true
+        show-sql: true
+        generate-ddl: true
