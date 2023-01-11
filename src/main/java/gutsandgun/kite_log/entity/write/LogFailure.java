@@ -28,7 +28,7 @@ public class LogFailure {
     private Long logSendingId;
 
     @Column(name = "fk_sending_x_id")
-    private Long SendingXId;
+    private Long sendingXId;
 
     private String sendingType;
 
