@@ -29,7 +29,7 @@ public class LogTotal {
     private Long brokerId;
 
     @Column(name = "fk_sending_x_id")
-    private Long SendingXId;
+    private Long sendingXId;
 
     private String sendingType;
 

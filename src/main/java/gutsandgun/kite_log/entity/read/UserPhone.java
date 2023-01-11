@@ -20,7 +20,7 @@ public class UserPhone {
     private Long id;
 
     @Column(name = "fk_user_id")
-    private Long fk_user_id;
+    private Long userId;
 
     private String phone;
 

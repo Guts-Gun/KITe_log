@@ -29,7 +29,7 @@ public class LogFailure {
 
     private String sendingType;
 
-    private String failure_cause;
+    private String failureCause;
 
     private Boolean isDeleted = false;
 }
