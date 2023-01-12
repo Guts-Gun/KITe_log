@@ -33,6 +33,9 @@ public class LogFailure {
     private String sendingType;
 
     private String failureCause;
+    private String title;
+    private String media_link;
+    private String content;
 
     private Boolean isDeleted = false;
 }

@@ -44,6 +44,9 @@ public class LogSending {
     private Long completeTime;
 
     private Long scheduleTime;
+    private String title;
+    private String media_link;
+    private String content;
 
     private Boolean isDeleted = false;
 }

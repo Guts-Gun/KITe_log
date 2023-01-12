@@ -31,6 +31,9 @@ public class Sending {
     private Long requestTime;
 
     private Long scheduleTime;
+    private String title;
+    private String media_link;
+    private String content;
 
     private Boolean isDeleted = false;
 }

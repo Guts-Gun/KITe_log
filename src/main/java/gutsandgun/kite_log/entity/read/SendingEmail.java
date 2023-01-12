@@ -26,9 +26,6 @@ public class SendingEmail {
 
     private String receiver;
 
-    private String title;
-
-    private String contents;
 
     private Boolean isDeleted = false;
 }

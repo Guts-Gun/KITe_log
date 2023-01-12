@@ -26,7 +26,11 @@ public class SendingMsg {
 
     private String receiver;
 
-    private String contents;
+    private String name;
+    private String var1;
+    private String var2;
+    private String var3;
+
 
     private Boolean isDeleted = false;
 }

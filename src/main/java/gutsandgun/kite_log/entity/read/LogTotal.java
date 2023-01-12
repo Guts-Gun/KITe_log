@@ -43,5 +43,9 @@ public class LogTotal {
 
     private String failure_cause;
 
+    private String title;
+    private String media_link;
+    private String content;
+
     private Boolean isDeleted = false;
 }
