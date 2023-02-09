@@ -1,9 +1,9 @@
 package gutsandgun.kite_log.repository.read;
 
-import gutsandgun.kite_log.entity.read.LogSending;
+import gutsandgun.kite_log.entity.read.ResultTx;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReadLogSendingRepository extends JpaRepository<LogSending, Long> {
+public interface ReadResultTxRepository extends JpaRepository<ResultTx, Long> {
 }

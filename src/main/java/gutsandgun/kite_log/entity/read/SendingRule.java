@@ -1,8 +1,11 @@
 package gutsandgun.kite_log.entity.read;
 
+import gutsandgun.kite_log.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -10,24 +13,41 @@ import org.hibernate.annotations.Where;
 @Getter
 @Setter
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql= "UPDATE sending_rule SET is_deleted=true WHERE id = ?")
-@Table(name="sending_rule")
-public class SendingRule {
+@SQLDelete(sql = "UPDATE sending_rule SET is_deleted=true WHERE id = ?")
+@Table(name = "sending_rule")
+public class SendingRule extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "fk_user_id")
-    private Long userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
+	/**
+	 * user id
+	 */
+	@Column(name = "fk_user_id")
+	@Comment("user id")
+	private String userId;
 
-    @Column(name = "fk_sending_id")
-    private Long sendingId;
+	/**
+	 * sending id
+	 */
+	@Column(name = "fk_sending_id")
+	@Comment("sending id")
+	private Long sendingId;
 
-    @Column(name = "fk_broker_id")
-    private Long brokerId;
+	/**
+	 * 중계사 id
+	 */
+	@Column(name = "fk_broker_id")
+	@Comment("중계사 id")
+	private Long brokerId;
 
-    private Long weight;
+	/**
+	 * 발송 비중
+	 */
+	@Comment("발송 비중")
+	private Long weight;
 
-    private Boolean isDeleted = false;
+	@ColumnDefault("false")
+	private Boolean isDeleted = false;
 }

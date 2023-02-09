@@ -1,38 +1,39 @@
 package gutsandgun.kite_log.entity.read;
 
 import gutsandgun.kite_log.entity.BaseTimeEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-/**
- * 발신 전화번호 저장 테이블
- */
 @Entity
 @Getter
 @Setter
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql = "UPDATE user_phone SET is_deleted=true WHERE id = ?")
-@Table(name = "user_phone")
-public class UserPhone extends BaseTimeEntity {
+@SQLDelete(sql = "UPDATE message_template SET is_deleted=true WHERE id = ?")
+@Table(name = "message_template")
+@NoArgsConstructor
+@AllArgsConstructor
+public class MessageTemplate extends BaseTimeEntity {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
 
 	@Column(name = "fk_user_id")
-	@Comment("user id")
 	private String userId;
 
-	@Comment("발신 이름")
-	private String name;
-	@Comment("발신 전화번호")
-	private String phone;
+	private String title;
+
+	private String content;
 
 	@ColumnDefault("false")
 	private Boolean isDeleted = false;
@@ -44,4 +45,5 @@ public class UserPhone extends BaseTimeEntity {
 	@Comment("수정자")
 	@Column(name = "mod_id", length = 20)
 	private String modId;
+
 }

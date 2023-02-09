@@ -1,7 +1,8 @@
-package gutsandgun.kite_log.entity.read;
+package gutsandgun.kite_log.entity.write;
 
 import gutsandgun.kite_log.entity.BaseTimeEntity;
 import gutsandgun.kite_log.type.SendingRuleType;
+import gutsandgun.kite_log.type.SendingStatus;
 import gutsandgun.kite_log.type.SendingType;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,13 +12,15 @@ import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+/**
+ * Sending 결과
+ */
 @Entity
 @Getter
 @Setter
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql = "UPDATE sending SET is_deleted=true WHERE id = ?")
-@Table(name = "sending")
-public class Sending extends BaseTimeEntity {
+@SQLDelete(sql = "UPDATE result_sending SET is_deleted=true WHERE id = ?")
+public class ResultSending extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,21 +35,35 @@ public class Sending extends BaseTimeEntity {
 	private String userId;
 
 	/**
-	 * 분배 규칙 타입
+	 * sending id
 	 */
-	@Comment("분배 규칙 타입")
-	@Enumerated(EnumType.STRING)
-	private SendingRuleType sendingRuleType;
+	@Column(name = "fk_sending_id")
+	@Comment("sending id")
+	private Long sendingId;
 
 	/**
 	 * 발송 메시지 타입
 	 */
 	@Comment("발송 메시지 타입")
-	@Enumerated(EnumType.STRING)
 	private SendingType sendingType;
 
-	@Comment("대체발송 여부")
-	private String replaceYn;
+	/**
+	 * 분배 규칙 타입
+	 */
+	@Comment("분배 규칙 타입")
+	private SendingRuleType sendingRuleType;
+
+	/**
+	 * 발송 상태
+	 */
+	@Comment("발송 상태")
+	private SendingStatus sendingStatus;
+
+	/**
+	 * 성공 여부
+	 */
+	@Comment("성공 여부")
+	private Boolean success;
 
 	/**
 	 * 전체 메시지 개수
@@ -54,6 +71,20 @@ public class Sending extends BaseTimeEntity {
 	@Comment("전체 메시지 개수")
 	private Long totalMessage;
 
+	/**
+	 * 실패한 메시지 개수
+	 */
+	@Comment("실패한 메시지 개수")
+	private Long failedMessage;
+
+	/**
+	 * 평균 응답속도
+	 */
+	@Comment("평군 응답속도")
+	private Float avgLatency;
+
+
+	// 시간 관련 로그
 	/**
 	 * 입력 시간 unix time
 	 */
@@ -65,35 +96,25 @@ public class Sending extends BaseTimeEntity {
 	 */
 	@Comment("예약 시간")
 	private Long scheduleTime;
-	/**
-	 * 메시지 제목
-	 */
-	@Comment("제목")
-	private String title;
 
 	/**
-	 * 미디어 호스팅 주소
+	 * 시작 시간 unix time
 	 */
-	@Comment("미디어 호스팅 주소")
-	private String mediaLink;
+	@Comment("시작 시간")
+	private Long startTime;
 
 	/**
-	 * 메시지 내용
+	 * 완료 시간 unix time
 	 */
-	@Comment("메시지 내용")
-	private String content;
+	@Comment("완료 시간")
+	private Long completeTime;
 
-	@Comment("발신자")
-	private String sender;
+	/**
+	 * 결과 기록 시간
+	 */
+	@Comment("결과 기록 시간")
+	private Long logTime;
 
 	@ColumnDefault("false")
 	private Boolean isDeleted = false;
-
-	@Comment("생성자")
-	@Column(name = "reg_id", nullable = false, length = 20)
-	private String regId;
-
-	@Comment("수정자")
-	@Column(name = "mod_id", length = 20)
-	private String modId;
 }
