@@ -1,4 +1,4 @@
-package gutsandgun.kite_log.entity.type;
+package gutsandgun.kite_log.type;
 
 /**
  * 발송타입
