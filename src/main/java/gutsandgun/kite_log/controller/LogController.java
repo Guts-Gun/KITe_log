@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("log")
 public class LogController {
     private final Logging logging;
-    @PostMapping(path = "/refresh_token")
-    public String refreshToken(@RequestBody String msg) {
+    @PostMapping(path = "/test")
+    public String test(@RequestBody String msg) {
         logging.LogSave(msg);
         return "Clear";
     }

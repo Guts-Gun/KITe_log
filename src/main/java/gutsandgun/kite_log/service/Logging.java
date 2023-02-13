@@ -75,9 +75,6 @@ public class Logging {
                 sendingInputCache.setSender(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                sendingInputCache.setSendingType(resultSending.getSendingType());
-
-                sendingInputCache.setUserId(resultSending.getUserId());
                 //
 
                 resultSending.setUserId(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
@@ -100,6 +97,10 @@ public class Logging {
                 sendingInputCache.setInputTime(resultSending.getInputTime());
 
                 sendingInputCache.setScheduleTime(resultSending.getScheduleTime());
+
+                sendingInputCache.setSendingType(resultSending.getSendingType());
+
+                sendingInputCache.setUserId(resultSending.getUserId());
 
                 logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
             }
@@ -159,8 +160,6 @@ public class Logging {
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
                 resultSending.setStartTime(time);
-
-                resultSending.setSendingStatus(SendingStatus.SENDING);
 
                 writeResultSendingRepository.save(resultSending);
             }
@@ -317,7 +316,7 @@ public class Logging {
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByTxId(resultTx.getId());
+                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndTxId(brokerId, resultTx.getId());
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
                 resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
