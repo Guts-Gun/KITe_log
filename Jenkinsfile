@@ -33,6 +33,7 @@ pipeline {
           agent any
           steps {
             echo 'Bulid Docker'
+			sh "echo jenkins | sudo -kS chmod 666 /var/run/docker.sock"
             script {
                   dockerImage = docker.build imagename
             }
