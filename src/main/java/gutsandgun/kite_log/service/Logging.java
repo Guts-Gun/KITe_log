@@ -183,7 +183,9 @@ public class Logging {
 
                 Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
 
-                ResultTx resultTx=writeResultTxRepository.findBySendingIdAndTxId(sendingId, TxId);
+                Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
+
+                ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
                 resultTx.setStartTime(time);
 
@@ -209,7 +211,9 @@ public class Logging {
 
                 Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
 
-                ResultTx resultTx=writeResultTxRepository.findBySendingIdAndTxId(sendingId, TxId);
+                Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
+
+                ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -268,14 +272,16 @@ public class Logging {
 
                 String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("}"));
 
-                ResultTx resultTx=writeResultTxRepository.findBySendingIdAndTxId(sendingId, TxId);
+                Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
+
+                ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
                 resultTx.setContent(content);
 
                 resultTx.setBrokerId(brokerId);
 
-                resultTxTransfer.setTxId(TxId);
+                resultTxTransfer.setTxId(resultTx.getId());
 
                 resultTxTransfer.setBrokerId(brokerId);
 
@@ -309,8 +315,10 @@ public class Logging {
 
                 Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
 
-                ResultTx resultTx=writeResultTxRepository.findBySendingIdAndTxId(sendingId, TxId);
-                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findBySendingIdAndTxId(sendingId, TxId);
+                Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
+
+                ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByTxId(resultTx.getId());
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
                 resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -366,7 +374,9 @@ public class Logging {
 
                 Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
 
-                ResultTx resultTx=writeResultTxRepository.findBySendingIdAndTxId(sendingId, TxId);
+                Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
+
+                ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
                 resultTx.setSuccess(false);

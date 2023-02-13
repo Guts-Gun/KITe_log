@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WriteResultTxTransferRepository extends JpaRepository<ResultTxTransfer, Long> {
-    ResultTxTransfer findBySendingIdAndTxId(Long sendingId, Long TxId);
+    ResultTxTransfer findByTxId(Long resultTxId);
 }
