@@ -3,8 +3,9 @@ server:
 spring:
   data:
     redis:
-      host: redis-cluster.redis.svc.cluster.local
-      port: 6379
+      cluster:
+        nodes:
+        - redis-cluster.redis.svc.cluster.local:6379
   kafka:
     consumer:
       bootstrap-servers: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
