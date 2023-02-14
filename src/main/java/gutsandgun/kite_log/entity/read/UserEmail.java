@@ -16,33 +16,36 @@ import org.hibernate.annotations.Where;
 @Getter
 @Setter
 @Where(clause = "is_deleted = false")
-@SQLDelete(sql= "UPDATE user_email SET is_deleted=true WHERE id = ?")
-@Table(name="user_email")
+@SQLDelete(sql = "UPDATE user_email SET is_deleted=true WHERE id = ?")
+@Table(name = "user_email",
+		indexes = {
+				@Index(name = "idx_user_email_user_id", columnList = "fk_user_id")
+		})
 public class UserEmail extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
 
-    @Column(name = "fk_user_id")
-    @Comment("user id")
-    private String userId;
+	@Column(name = "fk_user_id")
+	@Comment("user id")
+	private String userId;
 
-    @Comment("발신 이름")
-    private String name;
+	@Comment("발신 이름")
+	private String name;
 
-    @Comment("발신 email")
-    private String email;
+	@Comment("발신 email")
+	private String email;
 
-    @ColumnDefault("false")
-    private Boolean isDeleted = false;
+	@ColumnDefault("false")
+	private Boolean isDeleted = false;
 
-    @Comment("생성자")
-    @Column(name = "reg_id", nullable = false, length = 20)
-    private String regId;
+	@Comment("생성자")
+	@Column(name = "reg_id", nullable = false, length = 20)
+	private String regId;
 
-    @Comment("수정자")
-    @Column(name = "mod_id", length = 20)
-    private String modId;
+	@Comment("수정자")
+	@Column(name = "mod_id", length = 20)
+	private String modId;
 }

@@ -16,8 +16,12 @@ import org.hibernate.annotations.Comment;
 @Table(name = "send_replace")
 public class SendReplace extends BaseTimeEntity {
 
+	/**
+	 * tx id 1대 1 대응
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Comment("tx_id")
 	@Column(name = "fk_tx_id")
 	private Long id;
 

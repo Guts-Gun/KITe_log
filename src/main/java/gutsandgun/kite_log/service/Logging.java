@@ -256,7 +256,7 @@ public class Logging {
                 Long sendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                String sendingType=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+                SendingType sendingType= SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
                 Long brokerId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
@@ -279,11 +279,17 @@ public class Logging {
 
                 resultTx.setBrokerId(brokerId);
 
-                resultTxTransfer.setTxId(resultTx.getId());
+                resultTxTransfer.setResultTxId(resultTx.getId());
 
                 resultTxTransfer.setBrokerId(brokerId);
 
                 resultTxTransfer.setSendTime(time);
+
+                resultTxTransfer.setReceiver(resultTx.getReceiver());
+
+                resultTxTransfer.setSender(resultTx.getSender());
+
+                resultTxTransfer.setSendingType(sendingType);
 
                 writeResultTxRepository.save(resultTx);
                 writeResultTxTransferRepository.save(resultTxTransfer);

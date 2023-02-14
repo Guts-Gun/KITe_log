@@ -3,9 +3,7 @@ package gutsandgun.kite_log.entity.read;
 import gutsandgun.kite_log.entity.BaseTimeEntity;
 import gutsandgun.kite_log.type.FailReason;
 import gutsandgun.kite_log.type.SendingType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -18,6 +16,12 @@ import org.hibernate.annotations.Where;
 @Setter
 @Where(clause = "is_deleted = false")
 @SQLDelete(sql = "UPDATE result_tx_failure SET is_deleted=true WHERE id = ?")
+@Table(
+		indexes = {
+				@Index(name = "idx_result_tx_failure_user_id", columnList = "fk_user_id"),
+				@Index(name = "idx_result_tx_failure_result_sending_id", columnList = "fk_result_sending_id"),
+				@Index(name = "idx_result_tx_failure_tx_id", columnList = "fk_tx_id")
+		})
 public class ResultTxFailure extends BaseTimeEntity {
 
 	/**
@@ -25,7 +29,7 @@ public class ResultTxFailure extends BaseTimeEntity {
 	 */
 	@Id
 //    @Column(name = "pk_result_tx_id") comment 달면 굳이 이렇게 안해도 될듯?
-	@Comment("result_tx id")
+	@Comment("result_tx_id")
 	private Long id;
 
 	/**

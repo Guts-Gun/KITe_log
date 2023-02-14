@@ -14,7 +14,11 @@ import org.hibernate.annotations.Where;
 @Setter
 @Where(clause = "is_deleted = false")
 @SQLDelete(sql = "UPDATE sending_rule SET is_deleted=true WHERE id = ?")
-@Table(name = "sending_rule")
+@Table(name = "sending_rule",
+		indexes = {
+				@Index(name = "idx_sending_rule_user_id", columnList = "fk_user_id"),
+				@Index(name = "idx_sending_rule_sending_id", columnList = "fk_sending_id")
+		})
 public class SendingRule extends BaseTimeEntity {
 
 	@Id
