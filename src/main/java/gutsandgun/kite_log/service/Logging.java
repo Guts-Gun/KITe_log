@@ -322,7 +322,7 @@ public class Logging {
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndTxId(brokerId, resultTx.getId());
+                ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
                 resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
