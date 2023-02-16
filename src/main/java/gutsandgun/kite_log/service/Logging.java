@@ -36,7 +36,7 @@ public class Logging {
 
     public void LogSave(String msg){
         System.out.printf(msg);
-        String logging=msg.substring(msg.indexOf("Service:"));
+        String logging=msg;
         if(logging.contains("Service: request")){
             logging=logging.substring(logging.indexOf("Service: request"));
             logging=logging.substring(logging.indexOf(",")+2);
