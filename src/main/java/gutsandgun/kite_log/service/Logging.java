@@ -35,7 +35,7 @@ public class Logging {
     private final WriteResultTxTransferRepository writeResultTxTransferRepository;
 
     public void LogSave(String msg){
-        log.info(msg);
+        System.out.printf(msg);
         String logging=msg.substring(msg.indexOf("Service:"));
         if(logging.contains("Service: request")){
             logging=logging.substring(logging.indexOf("Service: request"));
