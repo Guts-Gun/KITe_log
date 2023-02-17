@@ -51,6 +51,10 @@ public class Logging {
                 resultSending.setSendingId(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
+                if(writeResultSendingRepository.findBySendingId(resultSending.getSendingId())!=null){
+                    return;
+                }
+
                 resultSending.setSendingType(SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
@@ -138,6 +142,10 @@ public class Logging {
                     log.warn("type: input, SendingInputCache is null. retrying...");
                     Thread.sleep(1000);
                     sendingInputCache=logCache.SendingInputCache(sendingId,null);
+                }
+
+                if(writeResultTxRepository.findByResultSendingIdAndTxId(sendingInputCache.getResultSendingId(), resultTx.getTxId())!=null){
+                    return;
                 }
 
                 resultTx.setTitle(sendingInputCache.getTitle());
@@ -255,6 +263,10 @@ public class Logging {
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
+                if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
+                    return;
+                }
+
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
 
                 resultTx.setFailReason(FailReason.USER);
@@ -317,6 +329,10 @@ public class Logging {
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
+
+                if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null){
+                    return;
+                }
 
                 resultTx.setContent(content);
 
@@ -441,6 +457,10 @@ public class Logging {
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
+
+                if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
+                    return;
+                }
 
                 resultTx.setSuccess(false);
 
