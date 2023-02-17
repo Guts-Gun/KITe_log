@@ -226,6 +226,12 @@ public class Logging {
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
+                while(resultTx==null){
+                    log.warn("type: pushQueue, ResultTx is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                }
+
                 resultTx.setStartTime(time);
 
                 resultTx.setBrokerId(brokerId);
@@ -261,6 +267,13 @@ public class Logging {
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+
+                while(resultTx==null){
+                    log.warn("type: blocking, ResultTx is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                }
+
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
                 if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
@@ -312,10 +325,7 @@ public class Logging {
                 Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("@"));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
@@ -328,13 +338,18 @@ public class Logging {
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+
+                while(resultTx==null){
+                    log.warn("type: sendBroker, ResultTx is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                }
+
                 ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
                 if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null){
                     return;
                 }
-
-                resultTx.setContent(content);
 
                 resultTx.setBrokerId(brokerId);
 
@@ -389,7 +404,20 @@ public class Logging {
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+
+                while(resultTx==null){
+                    log.warn("type: receiveBroker, ResultTx is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                }
+
                 ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
+
+                while(resultTxTransfer==null){
+                    log.warn("type: receiveBroker, ResultTxTransfer is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
+                }
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
                 resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -456,6 +484,13 @@ public class Logging {
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+
+                while(resultTx==null){
+                    log.warn("type: missingSendingId, ResultTx is null. retrying...");
+                    Thread.sleep(1000);
+                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                }
+
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
                 if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
