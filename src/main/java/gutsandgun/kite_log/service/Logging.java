@@ -424,8 +424,8 @@ public class Logging {
                 Long sendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                FailReason failReason= FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
+                FailReason failReason= FailReason.SYSTEM;
+                //logging=logging.substring(logging.indexOf(",")+2);
 
                 Long brokerId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
