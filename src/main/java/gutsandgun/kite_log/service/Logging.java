@@ -297,7 +297,7 @@ public class Logging {
                 Long sendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                SendingType sendingType= SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                SendingType sendingType= SendingType.SMS;//SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
                 Long brokerId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
