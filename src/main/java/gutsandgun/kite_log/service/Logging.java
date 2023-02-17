@@ -65,30 +65,25 @@ public class Logging {
 
                 //
                 SendingInputCache sendingInputCache=new SendingInputCache();
-                System.out.println(logging);
+
                 sendingInputCache.setTitle(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
-                System.out.println(logging);
+
                 sendingInputCache.setContent(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
-                System.out.println(logging);
+
                 sendingInputCache.setMediaLink(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
-                System.out.println(logging);
+                
                 sendingInputCache.setSender(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
-                System.out.println(logging);
                 //
 
                 resultSending.setUserId(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                resultSending.setLogTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
-                logging=logging.substring(logging.indexOf(",")+2);
-
                 resultSending.setInputTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
-
 
                 resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
 
