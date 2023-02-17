@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LogController {
     private final Logging logging;
     @PostMapping(path = "/test")
-    public String test(@RequestBody String msg) {
+    public String test(@RequestBody String msg) throws InterruptedException {
         logging.LogSave(msg);
         return "Clear";
     }
