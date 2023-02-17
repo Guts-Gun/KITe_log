@@ -276,7 +276,7 @@ public class Logging {
 
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
-                if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
+                if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
                     return;
                 }
 
@@ -381,7 +381,7 @@ public class Logging {
                     failReason=FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 }
                 catch(Exception e){
-                    System.out.println("FaileReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                    System.out.println("FailReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 }
                 logging=logging.substring(logging.indexOf(",")+2);
 
@@ -499,7 +499,7 @@ public class Logging {
 
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
 
-                if(writeResultTxFailureRepository.findById(resultTx.getId())!=null){
+                if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
                     return;
                 }
 
