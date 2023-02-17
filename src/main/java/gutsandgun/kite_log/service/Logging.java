@@ -74,7 +74,7 @@ public class Logging {
 
                 sendingInputCache.setMediaLink(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
-                
+
                 sendingInputCache.setSender(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
                 //
@@ -85,7 +85,9 @@ public class Logging {
                 resultSending.setInputTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
+                if(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))!="null"){
+                    resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
+                }
 
                 resultSending.setSendingStatus(SendingStatus.PENDING);
 
@@ -254,13 +256,6 @@ public class Logging {
 
                 resultTx.setFailReason(FailReason.USER);
                 resultTxFailure.setFailReason(FailReason.USER);
-
-                if(resultTx.getScheduleTime()!=null){
-                    resultTx.setLogTime(time-resultTx.getScheduleTime());
-                }
-                else{
-                    resultTx.setLogTime(time-resultTx.getInputTime());
-                }
 
                 resultTxFailure.setUserId(resultTx.getUserId());
 
