@@ -14,7 +14,7 @@ import java.io.IOException;
 public class kafkaConsumer {
     private final Logging logging;
     @KafkaListener(topics="fluentd-container-logging",groupId="spring-log")
-    public void consume(String message) throws IOException{
+    public void consume(String message) throws IOException, InterruptedException {
         String msg = message.replace("\\","").replace("\"","");
         if(msg.contains("namespace_name:service")){
             logging.LogSave(msg);
