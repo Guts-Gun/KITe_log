@@ -104,6 +104,12 @@ public class Logging {
                 sendingInputCache.setUserId(resultSending.getUserId());
 
                 logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
+
+                while(sendingInputCache==null){
+                    log.warn("type: genSendingId, SendingInputCache is null. retrying...");
+                    Thread.sleep(1000);
+                    sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(),null);
+                }
             }
             else if(logging.contains("type: input")){
                 ResultTx resultTx=new ResultTx();
@@ -123,6 +129,13 @@ public class Logging {
                 resultTx.setReceiver(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 SendingInputCache sendingInputCache=logCache.SendingInputCache(sendingId,null);
+
+                while(sendingInputCache==null){
+                    logCache.SendingDeleteCache(sendingId);
+                    log.warn("type: input, SendingInputCache is null. retrying...");
+                    Thread.sleep(1000);
+                    sendingInputCache=logCache.SendingInputCache(sendingId,null);
+                }
 
                 resultTx.setTitle(sendingInputCache.getTitle());
 
