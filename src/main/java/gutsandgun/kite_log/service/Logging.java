@@ -85,8 +85,11 @@ public class Logging {
                 resultSending.setInputTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                if(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))!="null"){
+                try{
                     resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
+                }
+                catch(Exception e){
+                    System.out.println("ScheduleTime is "+logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
                 }
 
                 resultSending.setSendingStatus(SendingStatus.PENDING);
