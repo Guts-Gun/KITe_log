@@ -376,7 +376,13 @@ public class Logging {
                 String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                FailReason failReason= FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                FailReason failReason=null;
+                try{
+                    failReason=FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                }
+                catch(Exception e){
+                    System.out.println("FaileReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                }
                 logging=logging.substring(logging.indexOf(",")+2);
 
                 Long sendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
