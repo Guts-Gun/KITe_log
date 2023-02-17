@@ -16,6 +16,7 @@ import gutsandgun.kite_log.type.SendingType;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class Logging {
 
     private final WriteResultTxTransferRepository writeResultTxTransferRepository;
 
+    @Async
     public void LogSave(String msg) throws InterruptedException {
         String logging=msg;
         if(logging.contains("Service: request")){
