@@ -51,7 +51,7 @@ public class Logging {
                 resultSending.setSendingId(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                resultSending.setSendingType(SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
+                resultSending.setSendingType(SendingType.SMS);//SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
                 resultSending.setSendingRuleType(SendingRuleType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
@@ -297,7 +297,7 @@ public class Logging {
                 Long sendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                SendingType sendingType= SendingType.SMS;//SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                SendingType sendingType=SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
                 Long brokerId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
