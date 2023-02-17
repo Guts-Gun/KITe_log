@@ -89,7 +89,7 @@ public class Logging {
                 resultSending.setInputTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}"))));
+                resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
 
                 resultSending.setSendingStatus(SendingStatus.PENDING);
 
@@ -122,7 +122,7 @@ public class Logging {
                 resultTx.setSender(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                resultTx.setReceiver(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                resultTx.setReceiver(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 SendingInputCache sendingInputCache=logCache.SendingInputCache(sendingId,null);
 
@@ -158,7 +158,7 @@ public class Logging {
                 String sendingType=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
@@ -182,7 +182,7 @@ public class Logging {
                 Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
@@ -210,7 +210,7 @@ public class Logging {
                 Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
@@ -271,7 +271,7 @@ public class Logging {
                 Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("}"));
+                String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("@"));
 
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
@@ -320,7 +320,7 @@ public class Logging {
                 Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
@@ -379,7 +379,7 @@ public class Logging {
                 Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
                 logging=logging.substring(logging.indexOf(",")+2);
 
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("}")));
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
                 Long resultSendingId=writeResultSendingRepository.findBySendingId(sendingId).getId();
 
