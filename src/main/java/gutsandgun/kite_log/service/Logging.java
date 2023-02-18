@@ -116,6 +116,7 @@ public class Logging {
                 while(sendingInputCache==null){
                     log.warn("type: genSendingId, SendingInputCache is null. retrying...");
                     Thread.sleep(1000);
+                    logCache.SendingDeleteCache(resultSending.getSendingId());
                     sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(),null);
                 }
             }
@@ -139,7 +140,6 @@ public class Logging {
                 SendingInputCache sendingInputCache=logCache.SendingInputCache(sendingId,null);
 
                 while(sendingInputCache==null){
-                    logCache.SendingDeleteCache(sendingId);
                     log.warn("type: input, SendingInputCache is null. retrying...");
                     Thread.sleep(1000);
                     sendingInputCache=logCache.SendingInputCache(sendingId,null);
