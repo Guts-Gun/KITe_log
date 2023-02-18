@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Result;
 import java.io.IOException;
 
 @Service
@@ -528,6 +529,48 @@ public class Logging {
 
                 writeResultTxRepository.save(resultTx);
                 writeResultTxFailureRepository.save(resultTxFailure);
+            }
+        }
+        else if(logging.contains("Service: Result")){
+            System.out.println(logging);
+            logging=logging.substring(logging.indexOf("Service: Result"));
+            logging=logging.substring(logging.indexOf(",")+2);
+            if(logging.contains("type: complete")){
+                logging=logging.substring(logging.indexOf("type: complete"));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                Float avgLatency= Float.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                Long completeTime= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+                logging=logging.substring(logging.indexOf(",")+2);
+
+                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
+
+                ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
+
+                while(resultSending==null){
+                    log.warn("type: complete, ResultSending is null. retrying...");
+                    Thread.sleep(1000);
+                    resultSending=writeResultSendingRepository.findById(resultsendingId).get();
+                }
+
+                resultSending.setAvgLatency(avgLatency);
+
+                resultSending.setFailedMessage(failedMessage);
+
+                resultSending.setCompleteTime(completeTime);
+
+                writeResultSendingRepository.save(resultSending);
             }
         }
     }
