@@ -17,7 +17,7 @@ public class kafkaConsumer {
     public void consume(String message) throws IOException, InterruptedException {
         String msg = message.replace("\\","").replace("\"","");
         if(msg.contains("namespace_name:service") &&
-                !msg.contains("container_name:log") &&){
+                !msg.contains("container_name:log")){
             logging.LogSave(msg);
         }
     }
