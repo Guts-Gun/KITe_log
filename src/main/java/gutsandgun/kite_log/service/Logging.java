@@ -41,8 +41,6 @@ public class Logging {
 
     public void LogSave(String msg) throws InterruptedException {
         String logging=msg;
-        logging=logging.substring(logging.indexOf("gutsandgun.kite_log.service.Logging"));
-        logging=logging.substring(logging.indexOf(":"));
         if(msg.contains("gutsandgun.kite_log.service.Logging")){
             return;
         }
