@@ -40,7 +40,7 @@ public class Logging {
     public void LogSave(String msg) throws InterruptedException {
         String logging=msg;
         if(logging.contains("Service: request")){
-            System.out.println(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: request"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: genSendingId")){
@@ -175,7 +175,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: sendingManager")){
-            System.out.println(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: sendingManager"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendingStart")){
@@ -328,7 +328,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Send")){
-            System.out.println(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Send"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendBroker")){
@@ -577,7 +577,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Result")){
-            System.out.println(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Result"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: complete")){
