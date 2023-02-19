@@ -93,7 +93,7 @@ public class Logging {
             }
         }
         if(!clear){
-            rabbitMQProducer.sendQueue(msg);
+            rabbitMQProducer.logSendQueue(msg);
         }
     }
 
@@ -594,7 +594,7 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
 
         if(resultSending==null){
-            log.warn("type: complete, ResultSending is null. retrying..., resultSendingId: "+resultsendingId);
+            log.warn("type: complete, ResultSending is null. send Queue, resultSendingId: "+resultsendingId);
             return false;
         }
 

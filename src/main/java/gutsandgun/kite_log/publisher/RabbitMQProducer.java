@@ -12,10 +12,10 @@ import java.util.Date;
 public class RabbitMQProducer {
 
     @Value("${rabbitmq.log.exchange}")
-    private String exchange;
+    private String logExchange;
 
     @Value("${rabbitmq.routing.key.log}")
-    private String routingKey;
+    private String logRoutingKey;
 
     private RabbitTemplate rabbitTemplate;
 
@@ -23,7 +23,7 @@ public class RabbitMQProducer {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendQueue(String msg){
-        rabbitTemplate.convertAndSend(exchange, routingKey, msg);
+    public void logSendQueue(String msg){
+        rabbitTemplate.convertAndSend(logExchange, logRoutingKey, msg);
     }
 }

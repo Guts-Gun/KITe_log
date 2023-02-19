@@ -36,26 +36,26 @@ public class RabbitmqConfig {
 
 
     @Value("${rabbitmq.log.name}")
-    private String queue;
+    private String logQueue;
     @Value("${rabbitmq.log.exchange}")
-    private String exchange;
+    private String logExchange;
 
     @Value("${rabbitmq.routing.key.log}")
-    private String routingKey;
+    private String logRoutingKey;
 
     @Bean
-    Queue queue() {
-        return new Queue(queue, true);
+    Queue logQueue() {
+        return new Queue(logQueue, true);
     }
 
     @Bean
-    DirectExchange directExchange() {
-        return new DirectExchange(exchange);
+    DirectExchange logDirectExchange() {
+        return new DirectExchange(logExchange);
     }
 
     @Bean
-    Binding binding() {
-        return BindingBuilder.bind(queue()).to(directExchange()).with(routingKey);
+    Binding logBinding() {
+        return BindingBuilder.bind(logQueue()).to(logDirectExchange()).with(logRoutingKey);
     }
 
     @Bean
