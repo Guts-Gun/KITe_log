@@ -201,7 +201,7 @@ public class Logging {
             while(sendingInputCache==null){
                 Thread.sleep(1000);
                 logCache.SendingDeleteCache(resultSending.getSendingId());
-                sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(),null);
+                sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
             }
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
