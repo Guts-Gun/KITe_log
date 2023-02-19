@@ -243,6 +243,8 @@ public class Logging {
 
         resultSending.setStartTime(time);
 
+        resultSending.setSendingStatus(SendingStatus.SENDING);
+
         writeResultSendingRepository.save(resultSending);
 
         return true;
@@ -597,6 +599,8 @@ public class Logging {
             log.warn("type: complete, ResultSending is null. send Queue, resultSendingId: "+resultsendingId);
             return false;
         }
+
+        resultSending.setSendingStatus(SendingStatus.COMPLETE);
 
         resultSending.setAvgLatency(avgLatency);
 
