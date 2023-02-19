@@ -378,7 +378,7 @@ public class Logging {
                 ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
                 if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null){
-                    System.out.println(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId()).getResultTxId());
+                    System.out.println(TxId);
                     return;
                 }
 
