@@ -16,7 +16,9 @@ public class kafkaConsumer {
     @KafkaListener(topics="fluentd-container-logging",groupId="spring-log")
     public void consume(String message) throws IOException, InterruptedException {
         String msg = message.replace("\\","").replace("\"","");
-        if(msg.contains("namespace_name:service") && !msg.contains("container_name:log")){
+        if(msg.contains("namespace_name:service") &&
+                !msg.contains("container_name:log") && 
+                !msg.contains("message will send to fluentd-container-logging with partition_key")){
             logging.LogSave(msg);
         }
     }

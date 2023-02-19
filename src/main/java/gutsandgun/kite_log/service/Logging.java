@@ -113,11 +113,14 @@ public class Logging {
 
                 logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
 
-                while(sendingInputCache==null){
-                    log.warn("type: genSendingId, SendingInputCache is null. retrying...");
-                    Thread.sleep(1000);
-                    logCache.SendingDeleteCache(resultSending.getSendingId());
-                    sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(),null);
+                if(sendingInputCache==null){
+                    log.warn("type: genSendingId, SendingInputCache is null. retrying..., sendingId: "+resultSending.getSendingId());
+                    while(sendingInputCache==null){
+                        Thread.sleep(1000);
+                        logCache.SendingDeleteCache(resultSending.getSendingId());
+                        sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(),null);
+                    }
+                    log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
                 }
             }
             else if(logging.contains("type: input")){
@@ -139,10 +142,13 @@ public class Logging {
 
                 SendingInputCache sendingInputCache=logCache.SendingInputCache(sendingId,null);
 
-                while(sendingInputCache==null){
-                    log.warn("type: input, SendingInputCache is null. retrying...");
-                    Thread.sleep(1000);
-                    sendingInputCache=logCache.SendingInputCache(sendingId,null);
+                if(sendingInputCache==null){
+                    log.warn("type: input, SendingInputCache is null. retrying..., sendingId: "+sendingId);
+                    while(sendingInputCache==null){
+                        Thread.sleep(1000);
+                        sendingInputCache=logCache.SendingInputCache(sendingId,null);
+                    }
+                    log.warn("type: input, SendingInputCache null is fixed, sendingId: "+sendingId);
                 }
 
                 if(writeResultTxRepository.findByResultSendingIdAndTxId(sendingInputCache.getResultSendingId(), resultTx.getTxId())!=null){
@@ -186,10 +192,13 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: sendingStart, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: sendingStart, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: SendingStart, ResultSending null is fixed, sendingId: "+sendingId);
                 }
 
                 resultSending.setStartTime(time);
@@ -217,20 +226,26 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: pushQueue, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: pushQueue, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: pushQueue, ResultSending null is fixed, sendingId: "+sendingId);
                 }
 
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
-                while(resultTx==null){
-                    log.warn("type: pushQueue, ResultTx is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                if(resultTx==null){
+                    log.warn("type: pushQueue, ResultTx is null. retrying..., TxId: "+TxId);
+                    while(resultTx==null){
+                        Thread.sleep(1000);
+                        resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                    }
+                    log.warn("type: pushQueue, ResultTx null is fixed, TxId: "+TxId);
                 }
 
                 resultTx.setStartTime(time);
@@ -259,20 +274,26 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: blocking, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: blocking, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: blocking, ResultSending null is fixed, sendingId: "+sendingId);
                 }
 
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
-                while(resultTx==null){
-                    log.warn("type: blocking, ResultTx is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                if(resultTx==null){
+                    log.warn("type: blocking, ResultTx is null. retrying..., TxId: "+TxId);
+                    while(resultTx==null){
+                        Thread.sleep(1000);
+                        resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                    }
+                    log.warn("type: blocking, ResultTx null is fixed, TxId: "+TxId);
                 }
 
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
@@ -330,21 +351,29 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: sendBroker, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: sendBroker, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: sendBroker, ResultSending null is fixed, sendingId: "+sendingId);
                 }
+
 
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
-                while(resultTx==null){
-                    log.warn("type: sendBroker, ResultTx is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                if(resultTx==null){
+                    log.warn("type: sendBroker, ResultTx is null. retrying..., TxId: "+TxId);
+                    while(resultTx==null){
+                        Thread.sleep(1000);
+                        resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                    }
+                    log.warn("type: sendBroker, ResultTx null is fixed, TxId: "+TxId);
                 }
+
 
                 ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
@@ -403,28 +432,37 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: receiveBroker, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: receiveBroker, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: receiveBroker, ResultSending null is fixed, sendingId: "+sendingId);
                 }
 
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
-                while(resultTx==null){
-                    log.warn("type: receiveBroker, ResultTx is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                if(resultTx==null){
+                    log.warn("type: receiveBroker, ResultTx is null. retrying..., TxId: "+TxId);
+                    while(resultTx==null){
+                        Thread.sleep(1000);
+                        resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                    }
+                    log.warn("type: receiveBroker, ResultTx null is fixed, TxId: "+TxId);
                 }
 
                 ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
 
-                while(resultTxTransfer==null){
-                    log.warn("type: receiveBroker, ResultTxTransfer is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
+                if(resultTxTransfer==null){
+                    log.warn("type: receiveBroker, ResultTxTransfer is null. retrying..., resultTxId: "+resultTx.getId());
+                    while(resultTxTransfer==null){
+                        Thread.sleep(1000);
+                        resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
+                    }
+                    log.warn("type: receiveBroker, ResultTxTransfer null is fixed, resultTxId: "+resultTx.getId());
                 }
 
                 resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -483,20 +521,26 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
-                while(resultSending==null){
-                    log.warn("type: missingSendingId, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                if(resultSending==null){
+                    log.warn("type: missingSendingId, ResultSending is null. retrying..., sendingId: "+sendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findBySendingId(sendingId);
+                    }
+                    log.warn("type: missingSendingId, ResultSending null is fixed, sendingId: "+sendingId);
                 }
 
                 Long resultSendingId=resultSending.getId();
 
                 ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
-                while(resultTx==null){
-                    log.warn("type: missingSendingId, ResultTx is null. retrying...");
-                    Thread.sleep(1000);
-                    resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                if(resultTx==null){
+                    log.warn("type: missingSendingId, ResultTx is null. retrying..., TxId: "+TxId);
+                    while(resultTx==null){
+                        Thread.sleep(1000);
+                        resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
+                    }
+                    log.warn("type: missingSendingId, ResultTx null is fixed, TxId: "+TxId);
                 }
 
                 ResultTxFailure resultTxFailure=new ResultTxFailure();
@@ -559,10 +603,13 @@ public class Logging {
 
                 ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
 
-                while(resultSending==null){
-                    log.warn("type: complete, ResultSending is null. retrying...");
-                    Thread.sleep(1000);
-                    resultSending=writeResultSendingRepository.findById(resultsendingId).get();
+                if(resultSending==null){
+                    log.warn("type: complete, ResultSending is null. retrying..., resultSendingId: "+resultsendingId);
+                    while(resultSending==null){
+                        Thread.sleep(1000);
+                        resultSending=writeResultSendingRepository.findById(resultsendingId).get();
+                    }
+                    log.warn("type: complete, ResultSending null is fixed, resultSendingId: "+resultsendingId);
                 }
 
                 resultSending.setAvgLatency(avgLatency);
