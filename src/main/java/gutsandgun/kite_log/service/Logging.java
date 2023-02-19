@@ -5,6 +5,7 @@ import gutsandgun.kite_log.entity.write.ResultSending;
 import gutsandgun.kite_log.entity.write.ResultTx;
 import gutsandgun.kite_log.entity.write.ResultTxFailure;
 import gutsandgun.kite_log.entity.write.ResultTxTransfer;
+import gutsandgun.kite_log.publisher.RabbitMQProducer;
 import gutsandgun.kite_log.repository.write.WriteResultSendingRepository;
 import gutsandgun.kite_log.repository.write.WriteResultTxFailureRepository;
 import gutsandgun.kite_log.repository.write.WriteResultTxRepository;
@@ -36,9 +37,11 @@ public class Logging {
 
     private final WriteResultTxTransferRepository writeResultTxTransferRepository;
 
-    @Async
+    private final RabbitMQProducer rabbitMQProducer;
+
     public void LogSave(String msg) throws InterruptedException {
         String logging=msg;
+        Boolean clear=true;
         if(logging.contains("Service: request")){
             log.info(logging);
             logging=logging.substring(logging.indexOf("Service: request"));
@@ -47,7 +50,7 @@ public class Logging {
                 genSendingId(logging);
             }
             else if(logging.contains("type: input")){
-                input(logging);
+                clear=input(logging);
             }
         }
         else if(logging.contains("Service: sendingManager")){
@@ -55,13 +58,13 @@ public class Logging {
             logging=logging.substring(logging.indexOf("Service: sendingManager"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendingStart")){
-                sendingStart(logging);
+                clear=sendingStart(logging);
             }
             else if(logging.contains("type: pushQueue")){
-                pushQueue(logging);
+                clear=pushQueue(logging);
             }
             else if(logging.contains("type: blocking")){ //fail
-                blocking(logging);
+                clear=blocking(logging);
             }
         }
         else if(logging.contains("Service: Send")){
@@ -69,13 +72,13 @@ public class Logging {
             logging=logging.substring(logging.indexOf("Service: Send"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendBroker")){
-                sendBroker(logging);
+                clear=sendBroker(logging);
             }
             else if(logging.contains("type: receiveBroker")){ //success/fail
-                receiveBroker(logging);
+                clear=receiveBroker(logging);
             }
             else if(logging.contains("type: missingSendingId")){ //fail
-                missingSendingId(logging);
+                clear=missingSendingId(logging);
             }
         }
         else if(logging.contains("Service: Result")){
@@ -83,50 +86,15 @@ public class Logging {
             logging=logging.substring(logging.indexOf("Service: Result"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: complete")){
-                logging=logging.substring(logging.indexOf("type: complete"));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                Float avgLatency= Float.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                Long completeTime= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-                logging=logging.substring(logging.indexOf(",")+2);
-
-                Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
-
-                ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
-
-                if(resultSending==null){
-                    log.warn("type: complete, ResultSending is null. retrying..., resultSendingId: "+resultsendingId);
-                    while(resultSending==null){
-                        Thread.sleep(1000);
-                        resultSending=writeResultSendingRepository.findById(resultsendingId).get();
-                    }
-                    log.warn("type: complete, ResultSending null is fixed, resultSendingId: "+resultsendingId);
-                }
-
-                resultSending.setAvgLatency(avgLatency);
-
-                resultSending.setFailedMessage(failedMessage);
-
-                resultSending.setCompleteTime(completeTime);
-
-                writeResultSendingRepository.save(resultSending);
+                clear=complete(logging);
             }
+        }
+        if(!clear){
+            rabbitMQProducer.sendQueue(msg);
         }
     }
 
-    @Async
-    public void genSendingId(String logging) throws InterruptedException {
+    public void genSendingId(String logging) {
         ResultSending resultSending=new ResultSending();
 
         logging=logging.substring(logging.indexOf("type: genSendingId"));
@@ -197,7 +165,7 @@ public class Logging {
         sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
 
         if(sendingInputCache==null){
-            log.warn("type: genSendingId, SendingInputCache is null. retrying..., sendingId: "+resultSending.getSendingId());
+            log.warn("type: genSendingId, SendingInputCache is null. generating..., sendingId: "+resultSending.getSendingId());
             while(sendingInputCache==null){
                 logCache.SendingDeleteCache(resultSending.getSendingId());
                 sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
@@ -206,8 +174,7 @@ public class Logging {
         }
     }
 
-    @Async
-    public void input(String logging) throws InterruptedException {
+    public Boolean input(String logging) {
         ResultTx resultTx=new ResultTx();
 
         logging=logging.substring(logging.indexOf("type: input"));
@@ -227,16 +194,12 @@ public class Logging {
         SendingInputCache sendingInputCache=logCache.SendingInputCache(sendingId,null);
 
         if(sendingInputCache==null){
-            log.warn("type: input, SendingInputCache is null. retrying..., sendingId: "+sendingId);
-            while(sendingInputCache==null){
-                Thread.sleep(1000);
-                sendingInputCache=logCache.SendingInputCache(sendingId,null);
-            }
-            log.warn("type: input, SendingInputCache null is fixed, sendingId: "+sendingId);
+            log.warn("type: input, SendingInputCache is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         if(writeResultTxRepository.findByResultSendingIdAndTxId(sendingInputCache.getResultSendingId(), resultTx.getTxId())!=null){
-            return;
+            return true;
         }
 
         resultTx.setTitle(sendingInputCache.getTitle());
@@ -256,10 +219,11 @@ public class Logging {
         resultTx.setInputTime(sendingInputCache.getInputTime());
 
         writeResultTxRepository.save(resultTx);
+
+        return true;
     }
 
-    @Async
-    public void sendingStart(String logging) throws InterruptedException {
+    public Boolean sendingStart(String logging) {
         logging=logging.substring(logging.indexOf("type: sendingStart"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -274,21 +238,18 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: sendingStart, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: SendingStart, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: sendingStart, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         resultSending.setStartTime(time);
 
         writeResultSendingRepository.save(resultSending);
+
+        return true;
     }
 
-    @Async
-    public void pushQueue(String logging) throws InterruptedException {
+    public Boolean pushQueue(String logging) {
         logging=logging.substring(logging.indexOf("type: pushQueue"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -310,12 +271,8 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: pushQueue, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: pushQueue, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: pushQueue, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         Long resultSendingId=resultSending.getId();
@@ -323,12 +280,8 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: pushQueue, ResultTx is null. retrying..., TxId: "+TxId);
-            while(resultTx==null){
-                Thread.sleep(1000);
-                resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-            }
-            log.warn("type: pushQueue, ResultTx null is fixed, TxId: "+TxId);
+            log.warn("type: pushQueue, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
         }
 
         resultTx.setStartTime(time);
@@ -336,10 +289,11 @@ public class Logging {
         resultTx.setBrokerId(brokerId);
 
         writeResultTxRepository.save(resultTx);
+
+        return true;
     }
 
-    @Async
-    public void blocking(String logging) throws InterruptedException {
+    public Boolean blocking(String logging) {
         logging=logging.substring(logging.indexOf("type: blocking"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -360,12 +314,8 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: blocking, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: blocking, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: blocking, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         Long resultSendingId=resultSending.getId();
@@ -373,18 +323,14 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: blocking, ResultTx is null. retrying..., TxId: "+TxId);
-            while(resultTx==null){
-                Thread.sleep(1000);
-                resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-            }
-            log.warn("type: blocking, ResultTx null is fixed, TxId: "+TxId);
+            log.warn("type: blocking, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
         }
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
 
         if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
-            return;
+            return true;
         }
 
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -410,10 +356,11 @@ public class Logging {
 
         writeResultTxRepository.save(resultTx);
         writeResultTxFailureRepository.save(resultTxFailure);
+
+        return true;
     }
 
-    @Async
-    public void sendBroker(String logging) throws InterruptedException {
+    public Boolean sendBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: sendBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -434,12 +381,8 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: sendBroker, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: sendBroker, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: sendBroker, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
 
@@ -448,20 +391,15 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: sendBroker, ResultTx is null. retrying..., TxId: "+TxId);
-            while(resultTx==null){
-                Thread.sleep(1000);
-                resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-            }
-            log.warn("type: sendBroker, ResultTx null is fixed, TxId: "+TxId);
+            log.warn("type: sendBroker, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
         }
 
 
         ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
         if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null){
-            System.out.println(TxId);
-            return;
+            return true;
         }
 
         resultTx.setBrokerId(brokerId);
@@ -480,10 +418,11 @@ public class Logging {
 
         writeResultTxRepository.save(resultTx);
         writeResultTxTransferRepository.save(resultTxTransfer);
+
+        return true;
     }
 
-    @Async
-    public void receiveBroker(String logging) throws InterruptedException {
+    public Boolean receiveBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: receiveBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -516,12 +455,8 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: receiveBroker, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: receiveBroker, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: receiveBroker, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         Long resultSendingId=resultSending.getId();
@@ -529,23 +464,15 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: receiveBroker, ResultTx is null. retrying..., TxId: "+TxId);
-            while(resultTx==null){
-                Thread.sleep(1000);
-                resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-            }
-            log.warn("type: receiveBroker, ResultTx null is fixed, TxId: "+TxId);
+            log.warn("type: receiveBroker, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
         }
 
         ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
 
         if(resultTxTransfer==null){
-            log.warn("type: receiveBroker, ResultTxTransfer is null. retrying..., resultTxId: "+resultTx.getId());
-            while(resultTxTransfer==null){
-                Thread.sleep(1000);
-                resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
-            }
-            log.warn("type: receiveBroker, ResultTxTransfer null is fixed, resultTxId: "+resultTx.getId());
+            log.warn("type: receiveBroker, ResultTxTransfer is null. send Queue, resultTxId: "+resultTx.getId());
+            return false;
         }
 
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
@@ -583,10 +510,11 @@ public class Logging {
 
         writeResultTxTransferRepository.save(resultTxTransfer);
         writeResultTxRepository.save(resultTx);
+
+        return true;
     }
 
-    @Async
-    public void missingSendingId(String logging) throws InterruptedException {
+    public Boolean missingSendingId(String logging) {
         logging=logging.substring(logging.indexOf("type: missingSendingId"));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -607,12 +535,8 @@ public class Logging {
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
         if(resultSending==null){
-            log.warn("type: missingSendingId, ResultSending is null. retrying..., sendingId: "+sendingId);
-            while(resultSending==null){
-                Thread.sleep(1000);
-                resultSending=writeResultSendingRepository.findBySendingId(sendingId);
-            }
-            log.warn("type: missingSendingId, ResultSending null is fixed, sendingId: "+sendingId);
+            log.warn("type: missingSendingId, ResultSending is null. send Queue, sendingId: "+sendingId);
+            return false;
         }
 
         Long resultSendingId=resultSending.getId();
@@ -620,18 +544,14 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: missingSendingId, ResultTx is null. retrying..., TxId: "+TxId);
-            while(resultTx==null){
-                Thread.sleep(1000);
-                resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
-            }
-            log.warn("type: missingSendingId, ResultTx null is fixed, TxId: "+TxId);
+            log.warn("type: missingSendingId, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
         }
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
 
         if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
-            return;
+            return true;
         }
 
         resultTx.setSuccess(false);
@@ -659,5 +579,46 @@ public class Logging {
 
         writeResultTxRepository.save(resultTx);
         writeResultTxFailureRepository.save(resultTxFailure);
+
+        return true;
+    }
+
+    public Boolean complete(String logging) {
+        logging=logging.substring(logging.indexOf("type: complete"));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        Float avgLatency= Float.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        Long completeTime= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
+
+        ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
+
+        if(resultSending==null){
+            log.warn("type: complete, ResultSending is null. retrying..., resultSendingId: "+resultsendingId);
+            return false;
+        }
+
+        resultSending.setAvgLatency(avgLatency);
+
+        resultSending.setFailedMessage(failedMessage);
+
+        resultSending.setCompleteTime(completeTime);
+
+        writeResultSendingRepository.save(resultSending);
+
+        return true;
     }
 }
