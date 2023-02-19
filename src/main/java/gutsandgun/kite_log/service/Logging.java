@@ -201,10 +201,6 @@ public class Logging {
             return false;
         }
 
-        if(writeResultTxRepository.findByResultSendingIdAndTxId(sendingInputCache.getResultSendingId(), resultTx.getTxId())!=null){
-            return true;
-        }
-
         resultTx.setTitle(sendingInputCache.getTitle());
 
         resultTx.setContent(sendingInputCache.getContent());
@@ -332,10 +328,6 @@ public class Logging {
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
 
-        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
-            return true;
-        }
-
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
 
         resultTx.setFailReason(FailReason.USER);
@@ -400,10 +392,6 @@ public class Logging {
 
 
         ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
-
-        if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null){
-            return true;
-        }
 
         resultTx.setBrokerId(brokerId);
 
@@ -552,10 +540,6 @@ public class Logging {
         }
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
-
-        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()){
-            return true;
-        }
 
         resultTx.setSuccess(false);
 
