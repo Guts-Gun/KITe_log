@@ -194,12 +194,11 @@ public class Logging {
 
         sendingInputCache.setUserId(resultSending.getUserId());
 
-        logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
+        sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
 
         if(sendingInputCache==null){
             log.warn("type: genSendingId, SendingInputCache is null. retrying..., sendingId: "+resultSending.getSendingId());
             while(sendingInputCache==null){
-                Thread.sleep(1000);
                 logCache.SendingDeleteCache(resultSending.getSendingId());
                 sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
             }
