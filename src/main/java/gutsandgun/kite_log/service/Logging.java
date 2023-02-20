@@ -41,9 +41,6 @@ public class Logging {
 
     public void LogSave(String msg) {
         String logging=msg;
-        if(msg.contains("gutsandgun.kite_log.service.Logging")){
-            return;
-        }
         Boolean clear=true;
         if(logging.contains("Service: request")){
             log.info(logging);
@@ -148,7 +145,7 @@ public class Logging {
             resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
         }
         catch(Exception e){
-            System.out.println("ScheduleTime is "+logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
+            log.warn("ScheduleTime is "+logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
         }
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
@@ -439,7 +436,7 @@ public class Logging {
             failReason=FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         }
         catch(Exception e){
-            System.out.println("FailReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+            log.warn("FailReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         }
         logging=logging.substring(logging.indexOf(",")+2);
 
