@@ -45,7 +45,7 @@ public class Logging {
         String logging=msg;
         Boolean clear=true;
         if(logging.contains("Service: request")){
-            //log.info(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: request"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: genSendingId")){
@@ -56,7 +56,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: sendingManager")){
-            //log.info(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: sendingManager"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendingStart")){
@@ -70,7 +70,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Send")){
-            //log.info(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Send"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendBroker")){
@@ -84,7 +84,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Result")){
-            //log.info(logging);
+            log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Result"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: complete")){
@@ -165,13 +165,13 @@ public class Logging {
 
         sendingInputCache.setUserId(resultSending.getUserId());
 
-        sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
+        SendingInputCache sendingCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
 
-        if(sendingInputCache==null){
+        if(sendingCache==null){
             log.warn("type: genSendingId, SendingInputCache is null. generating..., sendingId: "+resultSending.getSendingId());
-            while(sendingInputCache==null){
+            while(sendingCache==null){
                 logCache.SendingDeleteCache(resultSending.getSendingId());
-                sendingInputCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
+                sendingCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
             }
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
