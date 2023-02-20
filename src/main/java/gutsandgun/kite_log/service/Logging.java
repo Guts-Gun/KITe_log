@@ -151,7 +151,7 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
 
-        writeResultSendingRepository.save(resultSending);
+        writeResultSendingRepository.saveAndFlush(resultSending);
 
         sendingInputCache.setResultSendingId(resultSending.getId());
 
@@ -219,7 +219,7 @@ public class Logging {
 
         resultTx.setInputTime(sendingInputCache.getInputTime());
 
-        writeResultTxRepository.save(resultTx);
+        writeResultTxRepository.saveAndFlush(resultTx);
 
         return true;
     }
@@ -248,7 +248,7 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.SENDING);
 
-        writeResultSendingRepository.save(resultSending);
+        writeResultSendingRepository.saveAndFlush(resultSending);
 
         return true;
     }
@@ -292,7 +292,7 @@ public class Logging {
 
         resultTx.setBrokerId(brokerId);
 
-        writeResultTxRepository.save(resultTx);
+        writeResultTxRepository.saveAndFlush(resultTx);
 
         return true;
     }
@@ -358,8 +358,8 @@ public class Logging {
 
         resultTxFailure.setSendingType(sendingType);
 
-        writeResultTxRepository.save(resultTx);
-        writeResultTxFailureRepository.save(resultTxFailure);
+        writeResultTxRepository.saveAndFlush(resultTx);
+        writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
         return true;
     }
@@ -420,8 +420,8 @@ public class Logging {
 
         resultTxTransfer.setSendingType(sendingType);
 
-        writeResultTxRepository.save(resultTx);
-        writeResultTxTransferRepository.save(resultTxTransfer);
+        writeResultTxRepository.saveAndFlush(resultTx);
+        writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
 
         return true;
     }
@@ -515,13 +515,13 @@ public class Logging {
 
             resultTxFailure.setBrokerId(brokerId);
 
-            writeResultTxFailureRepository.save(resultTxFailure);
+            writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
         }
 
         resultTxTransfer.setCompleteTime(time);
 
-        writeResultTxTransferRepository.save(resultTxTransfer);
-        writeResultTxRepository.save(resultTx);
+        writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+        writeResultTxRepository.saveAndFlush(resultTx);
 
         return true;
     }
@@ -589,8 +589,8 @@ public class Logging {
 
         resultTxFailure.setBrokerId(brokerId);
 
-        writeResultTxRepository.save(resultTx);
-        writeResultTxFailureRepository.save(resultTxFailure);
+        writeResultTxRepository.saveAndFlush(resultTx);
+        writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
         return true;
     }
@@ -633,7 +633,7 @@ public class Logging {
 
         resultSending.setCompleteTime(completeTime);
 
-        writeResultSendingRepository.save(resultSending);
+        writeResultSendingRepository.saveAndFlush(resultSending);
 
         return true;
     }
