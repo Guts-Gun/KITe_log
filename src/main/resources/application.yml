@@ -27,13 +27,6 @@ spring:
       cluster:
         nodes:
         - redis-cluster.redis.svc.cluster.local:6379
-  kafka:
-    consumer:
-      bootstrap-servers: kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092
-      group-id: spring-log
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
   writedb:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://gutsandgun.kro.kr:12004/log?usessl=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
