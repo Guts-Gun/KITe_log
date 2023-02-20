@@ -607,7 +607,7 @@ public class Logging {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean complete(String logging) {
-        logging=logging.substring(logging.indexOf("type: complete"));
+        logging=logging.substring(logging.indexOf("type:"));
 
         SendingStatus status= SendingStatus.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
