@@ -581,6 +581,9 @@ public class Logging {
         Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
+        String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        logging=logging.substring(logging.indexOf(",")+2);
+
         Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
