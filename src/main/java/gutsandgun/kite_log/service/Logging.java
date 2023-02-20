@@ -103,12 +103,14 @@ public class Logging {
         logging=logging.substring(logging.indexOf("type: genSendingId"));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        resultSending.setSendingId(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
+        Long sendingId=Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
         if(writeResultSendingRepository.findBySendingId(resultSending.getSendingId())!=null){
-            return;
+            resultSending=writeResultSendingRepository.findBySendingId(resultSending.getSendingId());
         }
+
+        resultSending.setSendingId(sendingId);
 
         resultSending.setSendingType(SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -153,8 +155,6 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
 
-        writeResultSendingRepository.saveAndFlush(resultSending);
-
         sendingInputCache.setResultSendingId(resultSending.getId());
 
         sendingInputCache.setInputTime(resultSending.getInputTime());
@@ -175,6 +175,8 @@ public class Logging {
             }
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
+
+        writeResultSendingRepository.saveAndFlush(resultSending);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
