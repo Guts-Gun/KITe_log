@@ -33,14 +33,14 @@ spring:
     username: root
     password: gutsandgun
     hikari:
-      maximum-pool-size: 1000
+      maximum-pool-size: 100
   readdb:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://gutsandgun.kro.kr:12002/read?usessl=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: gutsandgun
     hikari:
-      maximum-pool-size: 1000
+      maximum-pool-size: 100
   jpa:
     hibernate:
       ddl-auto: update  # option type: create, create-drop, update, validate, none
