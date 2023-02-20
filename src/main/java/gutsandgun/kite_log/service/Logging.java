@@ -39,7 +39,7 @@ public class Logging {
 
     private final RabbitMQProducer rabbitMQProducer;
 
-    public void LogSave(String msg) throws InterruptedException {
+    public void LogSave(String msg) {
         String logging=msg;
         if(msg.contains("gutsandgun.kite_log.service.Logging")){
             return;
@@ -201,6 +201,10 @@ public class Logging {
             return false;
         }
 
+        if(writeResultTxRepository.findByResultSendingIdAndTxId(sendingInputCache.getResultSendingId(),resultTx.getTxId())!=null) {
+            return true;
+        }
+
         resultTx.setTitle(sendingInputCache.getTitle());
 
         resultTx.setContent(sendingInputCache.getContent());
@@ -330,6 +334,10 @@ public class Logging {
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
 
+        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
+            return true;
+        }
+
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
 
         resultTx.setFailReason(FailReason.USER);
@@ -394,6 +402,10 @@ public class Logging {
 
 
         ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
+
+        if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null) {
+            return true;
+        }
 
         resultTx.setBrokerId(brokerId);
 
@@ -478,6 +490,10 @@ public class Logging {
         else{
             ResultTxFailure resultTxFailure=new ResultTxFailure();
 
+            if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
+                return true;
+            }
+
             resultTxFailure.setUserId(resultTx.getUserId());
 
             resultTxFailure.setTitle(resultTx.getTitle());
@@ -542,6 +558,10 @@ public class Logging {
         }
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
+
+        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
+            return true;
+        }
 
         resultTx.setSuccess(false);
 
