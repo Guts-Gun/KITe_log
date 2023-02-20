@@ -87,7 +87,7 @@ public class Logging {
             log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Result"));
             logging=logging.substring(logging.indexOf(",")+2);
-            if(logging.contains("type: complete")){
+            if(logging.contains("type:")){
                 clear=complete(logging);
             }
         }
@@ -612,43 +612,41 @@ public class Logging {
         SendingStatus status= SendingStatus.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        log.info("T");
-
         Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
-        log.info("T");
+
         String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
-        log.info("T");
+
         Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
-        log.info("T");
+
         Float avgLatency= Float.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
-        log.info("T");
+
         Long completeTime= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
-        log.info("T");
+
         Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
         ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
-        log.info("T");
+
 
         if(resultSending==null){
             log.warn("type: complete, ResultSending is null. send Queue, resultSendingId: "+resultsendingId);
             return false;
         }
-        log.info("T");
+
         resultSending.setSendingStatus(status);
-        log.info("T");
+
         resultSending.setAvgLatency(avgLatency);
-        log.info("T");
+
         resultSending.setFailedMessage(failedMessage);
-        log.info("T");
+
         resultSending.setCompleteTime(completeTime);
-        log.info("T");
+
         writeResultSendingRepository.saveAndFlush(resultSending);
-        log.info("T");
+
         return true;
     }
 }
