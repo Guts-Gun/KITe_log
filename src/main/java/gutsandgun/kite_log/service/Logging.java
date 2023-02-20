@@ -150,8 +150,8 @@ public class Logging {
         }
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
-        
-        writeResultSendingRepository.saveAndFlush(resultSending);
+
+        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
 
         sendingInputCache.setResultSendingId(resultSending.getId());
 
