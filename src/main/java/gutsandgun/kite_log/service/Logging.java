@@ -150,6 +150,8 @@ public class Logging {
         }
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
+        
+        writeResultSendingRepository.saveAndFlush(resultSending);
 
         sendingInputCache.setResultSendingId(resultSending.getId());
 
@@ -172,7 +174,7 @@ public class Logging {
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
 
-        writeResultSendingRepository.saveAndFlush(resultSending);
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
