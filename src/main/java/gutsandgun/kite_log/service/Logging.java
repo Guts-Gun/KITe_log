@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.transform.Result;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class Logging {
             rabbitMQProducer.logSendQueue(msg);
         }
     }
-
+    @Transactional
     public void genSendingId(String logging) {
         ResultSending resultSending=new ResultSending();
 
@@ -173,7 +174,7 @@ public class Logging {
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
     }
-
+    @Transactional
     public Boolean input(String logging) {
         ResultTx resultTx=new ResultTx();
 
@@ -223,6 +224,7 @@ public class Logging {
         return true;
     }
 
+    @Transactional
     public Boolean sendingStart(String logging) {
         logging=logging.substring(logging.indexOf("type: sendingStart"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -250,7 +252,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean pushQueue(String logging) {
         logging=logging.substring(logging.indexOf("type: pushQueue"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -294,7 +296,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean blocking(String logging) {
         logging=logging.substring(logging.indexOf("type: blocking"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -361,7 +363,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean sendBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: sendBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -423,7 +425,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean receiveBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: receiveBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -523,7 +525,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean missingSendingId(String logging) {
         logging=logging.substring(logging.indexOf("type: missingSendingId"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -592,7 +594,7 @@ public class Logging {
 
         return true;
     }
-
+    @Transactional
     public Boolean complete(String logging) {
         logging=logging.substring(logging.indexOf("type: complete"));
 
