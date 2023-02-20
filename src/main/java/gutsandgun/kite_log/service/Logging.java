@@ -574,12 +574,11 @@ public class Logging {
 
     public Boolean complete(String logging) {
         logging=logging.substring(logging.indexOf("type: complete"));
+
+        SendingStatus status= SendingStatus.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
         Long resultsendingId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-        logging=logging.substring(logging.indexOf(",")+2);
-
-        String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
 
         Long failedMessage= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
@@ -600,7 +599,7 @@ public class Logging {
             return false;
         }
 
-        resultSending.setSendingStatus(SendingStatus.COMPLETE);
+        resultSending.setSendingStatus(status);
 
         resultSending.setAvgLatency(avgLatency);
 
