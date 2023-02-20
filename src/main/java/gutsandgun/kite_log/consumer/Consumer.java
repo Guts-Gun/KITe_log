@@ -20,6 +20,13 @@ public class Consumer {
 
     @RabbitListener(queues = "${rabbitmq.routing.key.log}")
     public void consumeLog(String msg) {
-        executorService.submit(() ->logging.LogSave(msg));
+        executorService.submit(() ->{
+            try{
+                logging.LogSave(msg);
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }
+        });
     }
 }

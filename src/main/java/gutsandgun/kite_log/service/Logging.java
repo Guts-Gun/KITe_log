@@ -106,6 +106,10 @@ public class Logging {
         Long sendingId=Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
+        if(writeResultSendingRepository.findBySendingId(resultSending.getSendingId())!=null){
+            return;
+        }
+
         resultSending.setSendingId(sendingId);
 
         resultSending.setSendingType(SendingType.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(","))));
