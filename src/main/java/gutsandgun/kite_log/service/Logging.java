@@ -468,6 +468,10 @@ public class Logging {
 
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
+        if(resultTx.getSuccess()){
+            return true;
+        }
+
         if(resultTx==null){
             log.warn("type: receiveBroker, ResultTx is null. send Queue, TxId: "+TxId);
             return false;
