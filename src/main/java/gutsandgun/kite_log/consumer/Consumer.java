@@ -16,7 +16,7 @@ public class Consumer {
     @Autowired
     private Logging logging;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     @RabbitListener(queues = "${rabbitmq.routing.key.log}")
     public void consumeLog(String msg) {
