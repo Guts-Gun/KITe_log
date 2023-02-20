@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.transform.Result;
@@ -44,7 +45,7 @@ public class Logging {
         String logging=msg;
         Boolean clear=true;
         if(logging.contains("Service: request")){
-            log.info(logging);
+            //log.info(logging);
             logging=logging.substring(logging.indexOf("Service: request"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: genSendingId")){
@@ -55,7 +56,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: sendingManager")){
-            log.info(logging);
+            //log.info(logging);
             logging=logging.substring(logging.indexOf("Service: sendingManager"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendingStart")){
@@ -69,7 +70,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Send")){
-            log.info(logging);
+            //log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Send"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: sendBroker")){
@@ -83,7 +84,7 @@ public class Logging {
             }
         }
         else if(logging.contains("Service: Result")){
-            log.info(logging);
+            //log.info(logging);
             logging=logging.substring(logging.indexOf("Service: Result"));
             logging=logging.substring(logging.indexOf(",")+2);
             if(logging.contains("type: complete")){
@@ -94,7 +95,8 @@ public class Logging {
             rabbitMQProducer.logSendQueue(msg);
         }
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void genSendingId(String logging) {
         ResultSending resultSending=new ResultSending();
 
@@ -146,7 +148,7 @@ public class Logging {
             resultSending.setScheduleTime(Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@"))));
         }
         catch(Exception e){
-            log.warn("ScheduleTime is "+logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
+            //log.warn("ScheduleTime is "+logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
         }
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
@@ -174,7 +176,8 @@ public class Logging {
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean input(String logging) {
         ResultTx resultTx=new ResultTx();
 
@@ -224,7 +227,7 @@ public class Logging {
         return true;
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean sendingStart(String logging) {
         logging=logging.substring(logging.indexOf("type: sendingStart"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -252,7 +255,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean pushQueue(String logging) {
         logging=logging.substring(logging.indexOf("type: pushQueue"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -296,7 +300,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean blocking(String logging) {
         logging=logging.substring(logging.indexOf("type: blocking"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -363,7 +368,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean sendBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: sendBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -425,7 +431,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean receiveBroker(String logging) {
         logging=logging.substring(logging.indexOf("type: receiveBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -438,7 +445,7 @@ public class Logging {
             failReason=FailReason.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         }
         catch(Exception e){
-            log.warn("FailReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+            //log.warn("FailReason is "+logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         }
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -525,7 +532,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean missingSendingId(String logging) {
         logging=logging.substring(logging.indexOf("type: missingSendingId"));
         logging=logging.substring(logging.indexOf(",")+2);
@@ -594,7 +602,8 @@ public class Logging {
 
         return true;
     }
-    @Transactional
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Boolean complete(String logging) {
         logging=logging.substring(logging.indexOf("type: complete"));
 
