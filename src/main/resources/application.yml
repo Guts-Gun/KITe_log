@@ -19,7 +19,7 @@ spring:
   rabbitmq:
     listener:
       simple:
-        prefetch: 20
+        prefetch: 10
     host: gutsandgun.kro.kr
     port: 11005
     username: gutsandgun
