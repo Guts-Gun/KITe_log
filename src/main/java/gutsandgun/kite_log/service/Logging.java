@@ -185,7 +185,7 @@ public class Logging {
         if(sendingCache==null){
             log.warn("type: genSendingId, SendingInputCache is null. generating..., sendingId: "+resultSending.getSendingId());
             while(sendingCache==null){
-                logCache.SendingDeleteCache(resultSending.getSendingId());
+                //logCache.SendingDeleteCache(resultSending.getSendingId());
                 sendingCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
             }
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());

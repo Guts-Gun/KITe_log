@@ -15,7 +15,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class LogCache {
 
-    @Cacheable(value = "logSendingId", key = "#Id", cacheManager = "CacheManager")
+    @Cacheable(value = "logSendingId", key = "#Id", cacheManager = "CacheManager", unless="#result == null")
     public SendingInputCache SendingInputCache(Long Id, SendingInputCache sendingInputCache){
         return sendingInputCache;
     }
