@@ -155,7 +155,13 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.PENDING);
 
-        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: genSendingId, genSendingId is written, resultSendingId: "+resultSending.getId());
 
@@ -228,7 +234,13 @@ public class Logging {
 
         resultTx.setInputTime(sendingInputCache.getInputTime());
 
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: input, input is written, resultTx: "+resultTx.getId());
 
@@ -259,7 +271,13 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.SENDING);
 
-        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: sendingStart, sendingStart is updated, resultSendingId: "+resultSending.getId());
 
@@ -306,7 +324,13 @@ public class Logging {
 
         resultTx.setBrokerId(brokerId);
 
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: pushQueue, pushQueue is updated, resultTxId: "+resultTx.getId());
 
@@ -375,8 +399,22 @@ public class Logging {
 
         resultTxFailure.setSendingType(sendingType);
 
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
-        resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
+
+        save=false;
+        while(!save){
+            try{
+                resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                save=true;
+            }catch(Exception e){}
+        }
+
 
         log.info("type: blocking, blocking is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
@@ -440,8 +478,24 @@ public class Logging {
 
         resultTxTransfer.setSendingType(sendingType);
 
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
-        resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
+
+        save=false;
+        while(!save){
+            try{
+                resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+                save=true;
+            }catch(Exception e){}
+        }
+
+
+
 
         log.info("type: sendBroker, sendBroker is written, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
@@ -490,15 +544,15 @@ public class Logging {
 
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
+        if(resultTx==null){
+            log.warn("type: receiveBroker, ResultTx is null. send Queue, TxId: "+TxId);
+            return false;
+        }
+
         if(resultTx.getSuccess()!=null){
             if(resultTx.getSuccess()){
                 return true;
             }
-        }
-
-        if(resultTx==null){
-            log.warn("type: receiveBroker, ResultTx is null. send Queue, TxId: "+TxId);
-            return false;
         }
 
         ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
@@ -540,13 +594,32 @@ public class Logging {
 
             resultTxFailure.setBrokerId(brokerId);
 
-            writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+            Boolean save=false;
+            while(!save){
+                try{
+                    writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                    save=true;
+                }catch(Exception e){}
+            }
         }
 
         resultTxTransfer.setCompleteTime(time);
 
-        resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+                save=true;
+            }catch(Exception e){}
+        }
+
+        save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
@@ -617,8 +690,21 @@ public class Logging {
 
         resultTxFailure.setBrokerId(brokerId);
 
-        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
-        resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                save=true;
+            }catch(Exception e){}
+        }
+
+        save=false;
+        while(!save){
+            try{
+                resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: missingSendingId, missingSendingId is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
@@ -665,7 +751,13 @@ public class Logging {
 
         resultSending.setCompleteTime(completeTime);
 
-        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+        Boolean save=false;
+        while(!save){
+            try{
+                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                save=true;
+            }catch(Exception e){}
+        }
 
         log.info("type: complete, complete is updated, resultSendingId: "+resultSending.getId());
 
