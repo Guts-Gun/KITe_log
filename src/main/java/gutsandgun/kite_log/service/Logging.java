@@ -399,9 +399,23 @@ public class Logging {
             return true;
         }
 
-        resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
+        Boolean save=false;
 
-        resultTx.setFailReason(FailReason.USER);
+        if(resultTx.getSuccess()==null){
+            resultTx.setFailReason(FailReason.USER);
+            resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
+            while(!save){
+                ResultTx verification=null;
+                try{
+                    verification=writeResultTxRepository.saveAndFlush(resultTx);
+                    save=true;
+                    if(verification.getFailReason()!=resultTx.getFailReason()){
+                        save=false;
+                    }
+                }catch(Exception e){}
+            }
+        }
+
         resultTxFailure.setFailReason(FailReason.USER);
 
         resultTxFailure.setUserId(resultTx.getUserId());
@@ -419,19 +433,6 @@ public class Logging {
         resultTxFailure.setTxId(TxId);
 
         resultTxFailure.setSendingType(sendingType);
-
-        Boolean save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification.getFailReason()!=resultTx.getFailReason()){
-                    save=false;
-                }
-            }catch(Exception e){}
-
-        }
 
         save=false;
         while(!save){
@@ -593,15 +594,27 @@ public class Logging {
 
         resultTxTransfer.setSendingType(transferCache.getSendingType());
 
-        resultTx.setBrokerId(brokerId);
-        resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
-        resultTxTransfer.setSuccess(success.indexOf("true")!=-1 ? true : false);
-
-        if(success.indexOf("true")!=-1){
+        Boolean save=false;
+        if(resultTx.getSuccess()==null || !resultTx.getSuccess()){
+            resultTx.setBrokerId(brokerId);
+            resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
             resultTx.setFailReason(failReason);
-            resultTxTransfer.setFailReason(failReason);
+            while(!save){
+                ResultTx verification=null;
+                try{
+                    verification=writeResultTxRepository.saveAndFlush(resultTx);
+                    save=true;
+                    if(verification.getFailReason()!=resultTx.getFailReason()){
+                        save=false;
+                    }
+                }catch(Exception e){}
+            }
         }
-        else{
+
+        resultTxTransfer.setSuccess(success.indexOf("true")!=-1 ? true : false);
+        resultTxTransfer.setFailReason(failReason);
+
+        if(success.indexOf("true")==-1){
             ResultTxFailure resultTxFailure=new ResultTxFailure();
 
             if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
@@ -627,7 +640,7 @@ public class Logging {
 
             resultTxFailure.setBrokerId(brokerId);
 
-            Boolean save=false;
+            save=false;
             while(!save){
                 ResultTxFailure verification=null;
                 try{
@@ -642,7 +655,7 @@ public class Logging {
 
         resultTxTransfer.setCompleteTime(time);
 
-        Boolean save=false;
+        save=false;
         while(!save){
             ResultTxTransfer verification=null;
             try{
@@ -655,18 +668,6 @@ public class Logging {
         }
 
         log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
-
-        save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification.getFailReason()!=resultTx.getFailReason()){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
 
         return true;
     }
