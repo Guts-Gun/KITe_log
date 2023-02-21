@@ -580,20 +580,6 @@ public class Logging {
             return false;
         }
 
-        ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
-
-        resultTxTransfer.setResultTxId(transferCache.getResultTxId());
-
-        resultTxTransfer.setBrokerId(transferCache.getBrokerId());
-
-        resultTxTransfer.setSendTime(transferCache.getSendTime());
-
-        resultTxTransfer.setReceiver(transferCache.getReceiver());
-
-        resultTxTransfer.setSender(transferCache.getSender());
-
-        resultTxTransfer.setSendingType(transferCache.getSendingType());
-
         Boolean save=false;
         if(resultTx.getSuccess()==null || !resultTx.getSuccess()){
             resultTx.setBrokerId(brokerId);
@@ -610,6 +596,20 @@ public class Logging {
                 }catch(Exception e){}
             }
         }
+
+        ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
+
+        resultTxTransfer.setResultTxId(transferCache.getResultTxId());
+
+        resultTxTransfer.setBrokerId(transferCache.getBrokerId());
+
+        resultTxTransfer.setSendTime(transferCache.getSendTime());
+
+        resultTxTransfer.setReceiver(transferCache.getReceiver());
+
+        resultTxTransfer.setSender(transferCache.getSender());
+
+        resultTxTransfer.setSendingType(transferCache.getSendingType());
 
         resultTxTransfer.setSuccess(success.indexOf("true")!=-1 ? true : false);
         resultTxTransfer.setFailReason(failReason);
