@@ -399,7 +399,7 @@ public class Logging {
             return true;
         }
 
-        resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
+        resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
 
         resultTx.setFailReason(FailReason.USER);
         resultTxFailure.setFailReason(FailReason.USER);
@@ -594,10 +594,10 @@ public class Logging {
         resultTxTransfer.setSendingType(transferCache.getSendingType());
 
         resultTx.setBrokerId(brokerId);
-        resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
-        resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
+        resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
+        resultTxTransfer.setSuccess(success.indexOf("true")!=-1 ? true : false);
 
-        if(success.indexOf("true")==-1){
+        if(success.indexOf("true")!=-1){
             resultTx.setFailReason(failReason);
             resultTxTransfer.setFailReason(failReason);
         }
