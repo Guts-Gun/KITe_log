@@ -655,12 +655,6 @@ public class Logging {
 
         log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
-        if(resultTx.getSuccess()!=null){
-            if(resultTx.getSuccess()){
-                return true;
-            }
-        }
-
         save=false;
         while(!save){
             ResultTx verification=null;
