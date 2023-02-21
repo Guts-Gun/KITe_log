@@ -157,10 +157,15 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultSending verification=null;
             try{
-                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                verification=writeResultSendingRepository.saveAndFlush(resultSending);
                 save=true;
+                if(verification==null){
+                    save=false;
+                }
             }catch(Exception e){}
+
         }
 
         log.info("type: genSendingId, genSendingId is written, resultSendingId: "+resultSending.getId());
@@ -236,10 +241,15 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification==null){
+                    save=false;
+                }
             }catch(Exception e){}
+
         }
 
         log.info("type: input, input is written, resultTx: "+resultTx.getId());
@@ -273,10 +283,15 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultSending verification=null;
             try{
-                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                verification=writeResultSendingRepository.saveAndFlush(resultSending);
                 save=true;
+                if(verification.getStartTime()!=resultSending.getStartTime()){
+                    save=false;
+                }
             }catch(Exception e){}
+
         }
 
         log.info("type: sendingStart, sendingStart is updated, resultSendingId: "+resultSending.getId());
@@ -326,10 +341,15 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification.getStartTime()!=resultTx.getStartTime()){
+                    save=false;
+                }
             }catch(Exception e){}
+
         }
 
         log.info("type: pushQueue, pushQueue is updated, resultTxId: "+resultTx.getId());
@@ -401,17 +421,26 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification.getFailReason()!=resultTx.getFailReason()){
+                    save=false;
+                }
             }catch(Exception e){}
+
         }
 
         save=false;
         while(!save){
+            ResultTxFailure verification=null;
             try{
-                resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
                 save=true;
+                if(verification==null){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
@@ -480,22 +509,27 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification.getBrokerId()!=resultTx.getBrokerId()){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
         save=false;
         while(!save){
+            ResultTxTransfer verification=null;
             try{
-                resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
                 save=true;
+                if(verification==null){
+                    save=false;
+                }
             }catch(Exception e){}
         }
-
-
-
 
         log.info("type: sendBroker, sendBroker is written, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
@@ -596,9 +630,13 @@ public class Logging {
 
             Boolean save=false;
             while(!save){
+                ResultTxFailure verification=null;
                 try{
-                    writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                    verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
                     save=true;
+                    if(verification==null){
+                        save=false;
+                    }
                 }catch(Exception e){}
             }
         }
@@ -607,17 +645,25 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTxTransfer verification=null;
             try{
-                resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
                 save=true;
+                if(verification.getCompleteTime()!=resultTxTransfer.getCompleteTime()){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
         save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification.getFailReason()!=resultTx.getFailReason()){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
@@ -692,17 +738,25 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultTx verification=null;
             try{
-                resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+                verification=writeResultTxRepository.saveAndFlush(resultTx);
                 save=true;
+                if(verification.getFailReason()!=resultTx.getFailReason()){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
         save=false;
         while(!save){
+            ResultTxFailure verification=null;
             try{
-                resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+                verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
                 save=true;
+                if(verification==null){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
@@ -753,9 +807,13 @@ public class Logging {
 
         Boolean save=false;
         while(!save){
+            ResultSending verification=null;
             try{
-                resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
+                verification=writeResultSendingRepository.saveAndFlush(resultSending);
                 save=true;
+                if(verification.getCompleteTime()!=resultSending.getCompleteTime()){
+                    save=false;
+                }
             }catch(Exception e){}
         }
 
