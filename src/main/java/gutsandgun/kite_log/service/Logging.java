@@ -607,6 +607,7 @@ public class Logging {
             if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
                 return true;
             }
+            resultTxFailure.setFailReason(failReason);
 
             resultTxFailure.setUserId(resultTx.getUserId());
 
