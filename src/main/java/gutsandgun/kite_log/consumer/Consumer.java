@@ -18,16 +18,8 @@ public class Consumer {
     @Autowired
     private Logging logging;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
-
     @RabbitListener(queues = "${rabbitmq.routing.key.log}")
-    public void consumeLog(String msg) throws ExecutionException, InterruptedException {
-        try{
-            Future<?> future = executorService.submit(() ->logging.LogSave(msg));
-            Object result=future.get();
-        }
-        catch(Exception e){
-            throw e;
-        }
+    public void consumeLog(String msg) {
+        logging.LogSave(msg);
     }
 }

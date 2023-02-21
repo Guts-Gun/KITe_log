@@ -157,7 +157,7 @@ public class Logging {
 
         resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
 
-        System.out.println("type: genSendingId, genSendingId is written, resultSendingId: "+resultSending.getId());
+        log.info("type: genSendingId, genSendingId is written, resultSendingId: "+resultSending.getId());
 
         sendingInputCache.setResultSendingId(resultSending.getId());
 
@@ -228,9 +228,9 @@ public class Logging {
 
         resultTx.setInputTime(sendingInputCache.getInputTime());
 
-        writeResultTxRepository.saveAndFlush(resultTx);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
 
-        System.out.println("type: input, input is written, sendingId: "+sendingId);
+        log.info("type: input, input is written, resultTx: "+resultTx.getId());
 
         return true;
     }
@@ -259,9 +259,9 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.SENDING);
 
-        writeResultSendingRepository.saveAndFlush(resultSending);
+        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
 
-        System.out.println("type: sendingStart, sendingStart is updated, sendingId: "+sendingId);
+        log.info("type: sendingStart, sendingStart is updated, resultSendingId: "+resultSending.getId());
 
         return true;
     }
@@ -306,9 +306,9 @@ public class Logging {
 
         resultTx.setBrokerId(brokerId);
 
-        writeResultTxRepository.saveAndFlush(resultTx);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
 
-        System.out.println("type: pushQueue, pushQueue is updated, TxId: "+TxId);
+        log.info("type: pushQueue, pushQueue is updated, resultTxId: "+resultTx.getId());
 
         return true;
     }
@@ -375,10 +375,10 @@ public class Logging {
 
         resultTxFailure.setSendingType(sendingType);
 
-        writeResultTxRepository.saveAndFlush(resultTx);
-        writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
-        System.out.println("type: blocking, blocking is updated, TxId: "+TxId);
+        log.info("type: blocking, blocking is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
         return true;
     }
@@ -440,10 +440,10 @@ public class Logging {
 
         resultTxTransfer.setSendingType(sendingType);
 
-        writeResultTxRepository.saveAndFlush(resultTx);
-        writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
 
-        System.out.println("type: sendBroker, sendBroker is written, TxId: "+TxId);
+        log.info("type: sendBroker, sendBroker is written, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
         return true;
     }
@@ -545,10 +545,10 @@ public class Logging {
 
         resultTxTransfer.setCompleteTime(time);
 
-        writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
-        writeResultTxRepository.saveAndFlush(resultTx);
+        resultTxTransfer=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
 
-        System.out.println("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId());
+        log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
         return true;
     }
@@ -617,10 +617,10 @@ public class Logging {
 
         resultTxFailure.setBrokerId(brokerId);
 
-        writeResultTxRepository.saveAndFlush(resultTx);
-        writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
+        resultTx=writeResultTxRepository.saveAndFlush(resultTx);
+        resultTxFailure=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
-        System.out.println("type: missingSendingId, missingSendingId is updated, TxId: "+TxId);
+        log.info("type: missingSendingId, missingSendingId is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
         return true;
     }
@@ -665,9 +665,9 @@ public class Logging {
 
         resultSending.setCompleteTime(completeTime);
 
-        writeResultSendingRepository.saveAndFlush(resultSending);
+        resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
 
-        System.out.println("type: complete, complete is updated, resultSendingId: "+resultsendingId);
+        log.info("type: complete, complete is updated, resultSendingId: "+resultSending.getId());
 
         return true;
     }
