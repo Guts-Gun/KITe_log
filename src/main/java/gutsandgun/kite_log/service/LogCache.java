@@ -1,6 +1,7 @@
 package gutsandgun.kite_log.service;
 
 import gutsandgun.kite_log.dto.SendingInputCache;
+import gutsandgun.kite_log.dto.TransferInputCache;
 import gutsandgun.kite_log.entity.write.ResultTxTransfer;
 import gutsandgun.kite_log.repository.read.ReadResultSendingRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class LogCache {
     public void SendingDeleteCache(Long sendingId){}
 
     @Cacheable(value = "transferId", key = "#Id", cacheManager = "CacheManager", unless="#result == null")
-    public ResultTxTransfer TransferInputCache(String Id, ResultTxTransfer resultTxTransfer){
+    public TransferInputCache TransferInputCache(String Id, TransferInputCache resultTxTransfer){
         return resultTxTransfer;
     }
 

@@ -1,6 +1,7 @@
 package gutsandgun.kite_log.service;
 
 import gutsandgun.kite_log.dto.SendingInputCache;
+import gutsandgun.kite_log.dto.TransferInputCache;
 import gutsandgun.kite_log.entity.write.ResultSending;
 import gutsandgun.kite_log.entity.write.ResultTx;
 import gutsandgun.kite_log.entity.write.ResultTxFailure;
@@ -486,12 +487,11 @@ public class Logging {
             return false;
         }
 
-
-        ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
-
         if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null) {
             return true;
         }
+
+        TransferInputCache resultTxTransfer=new TransferInputCache();
 
         resultTxTransfer.setResultTxId(resultTx.getId());
 
@@ -507,7 +507,7 @@ public class Logging {
 
         String cacheKey=String.valueOf(brokerId).concat("+").concat(String.valueOf(resultTx.getId()));
 
-        ResultTxTransfer transferCache=logCache.TransferInputCache(cacheKey, resultTxTransfer);
+        TransferInputCache transferCache=logCache.TransferInputCache(cacheKey, resultTxTransfer);
 
         if(transferCache==null){
             log.warn("type: sendBroker, TransferInputCache is null. generating..., brokerId: "+brokerId+", resultTxId: "+resultTx.getId());
@@ -572,12 +572,27 @@ public class Logging {
 
         String cacheKey=String.valueOf(brokerId).concat("+").concat(String.valueOf(resultTx.getId()));
 
-        ResultTxTransfer resultTxTransfer=logCache.TransferInputCache(cacheKey,null);
+        TransferInputCache transferCache=logCache.TransferInputCache(cacheKey,null);
 
-        if(resultTxTransfer==null){
+        if(transferCache==null){
             log.warn("type: receiveBroker, ResultTxTransfer is null. send Queue, resultTxId: "+resultTx.getId());
             return false;
         }
+
+        ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
+
+        resultTxTransfer.setResultTxId(transferCache.getResultTxId());
+
+        resultTxTransfer.setBrokerId(transferCache.getBrokerId());
+
+        resultTxTransfer.setSendTime(transferCache.getSendTime());
+
+        resultTxTransfer.setReceiver(transferCache.getReceiver());
+
+        resultTxTransfer.setSender(transferCache.getSender());
+
+        resultTxTransfer.setSendingType(transferCache.getSendingType());
+
         resultTx.setBrokerId(brokerId);
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
         resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
