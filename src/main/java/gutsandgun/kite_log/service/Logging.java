@@ -157,6 +157,8 @@ public class Logging {
 
         resultSending=writeResultSendingRepository.saveAndFlush(resultSending);
 
+        System.out.println("type: genSendingId, genSendingId is written, resultSendingId: "+resultSending.getId());
+
         sendingInputCache.setResultSendingId(resultSending.getId());
 
         sendingInputCache.setInputTime(resultSending.getInputTime());
@@ -228,6 +230,8 @@ public class Logging {
 
         writeResultTxRepository.saveAndFlush(resultTx);
 
+        System.out.println("type: input, input is written, sendingId: "+sendingId);
+
         return true;
     }
 
@@ -256,6 +260,8 @@ public class Logging {
         resultSending.setSendingStatus(SendingStatus.SENDING);
 
         writeResultSendingRepository.saveAndFlush(resultSending);
+
+        System.out.println("type: sendingStart, sendingStart is updated, sendingId: "+sendingId);
 
         return true;
     }
@@ -301,6 +307,8 @@ public class Logging {
         resultTx.setBrokerId(brokerId);
 
         writeResultTxRepository.saveAndFlush(resultTx);
+
+        System.out.println("type: pushQueue, pushQueue is updated, TxId: "+TxId);
 
         return true;
     }
@@ -370,6 +378,8 @@ public class Logging {
         writeResultTxRepository.saveAndFlush(resultTx);
         writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
+        System.out.println("type: blocking, blocking is updated, TxId: "+TxId);
+
         return true;
     }
 
@@ -432,6 +442,8 @@ public class Logging {
 
         writeResultTxRepository.saveAndFlush(resultTx);
         writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+
+        System.out.println("type: sendBroker, sendBroker is written, TxId: "+TxId);
 
         return true;
     }
@@ -536,6 +548,8 @@ public class Logging {
         writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
         writeResultTxRepository.saveAndFlush(resultTx);
 
+        System.out.println("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId());
+
         return true;
     }
 
@@ -606,6 +620,8 @@ public class Logging {
         writeResultTxRepository.saveAndFlush(resultTx);
         writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
 
+        System.out.println("type: missingSendingId, missingSendingId is updated, TxId: "+TxId);
+
         return true;
     }
 
@@ -650,6 +666,8 @@ public class Logging {
         resultSending.setCompleteTime(completeTime);
 
         writeResultSendingRepository.saveAndFlush(resultSending);
+
+        System.out.println("type: complete, complete is updated, resultSendingId: "+resultsendingId);
 
         return true;
     }
