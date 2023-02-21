@@ -493,8 +493,6 @@ public class Logging {
             return true;
         }
 
-        resultTx.setBrokerId(brokerId);
-
         resultTxTransfer.setResultTxId(resultTx.getId());
 
         resultTxTransfer.setBrokerId(brokerId);
@@ -507,31 +505,20 @@ public class Logging {
 
         resultTxTransfer.setSendingType(sendingType);
 
-        Boolean save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification.getBrokerId()!=resultTx.getBrokerId()){
-                    save=false;
-                }
-            }catch(Exception e){}
+        String cacheKey=String.valueOf(brokerId).concat("+").concat(String.valueOf(resultTx.getId()));
+
+        ResultTxTransfer transferCache=logCache.TransferInputCache(cacheKey, resultTxTransfer);
+
+        if(transferCache==null){
+            log.warn("type: sendBroker, TransferInputCache is null. generating..., brokerId: "+brokerId+", resultTxId: "+resultTx.getId());
+            while(transferCache==null){
+                //logCache.TransferDeleteCache(cacheKey);
+                transferCache=logCache.TransferInputCache(cacheKey, resultTxTransfer);
+            }
+            log.warn("type: sendBroker, TransferInputCache null is fixed, brokerId: "+brokerId+", resultTxId: "+resultTx.getId());
         }
 
-        save=false;
-        while(!save){
-            ResultTxTransfer verification=null;
-            try{
-                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
-                save=true;
-                if(verification==null){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
-
-        log.info("type: sendBroker, sendBroker is written, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
+        log.info("type: sendBroker, sendBroker is written, resultTxId: "+resultTx.getId());
 
         return true;
     }
@@ -583,19 +570,15 @@ public class Logging {
             return false;
         }
 
-        if(resultTx.getSuccess()!=null){
-            if(resultTx.getSuccess()){
-                return true;
-            }
-        }
+        String cacheKey=String.valueOf(brokerId).concat("+").concat(String.valueOf(resultTx.getId()));
 
-        ResultTxTransfer resultTxTransfer=writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId, resultTx.getId());
+        ResultTxTransfer resultTxTransfer=logCache.TransferInputCache(cacheKey,null);
 
         if(resultTxTransfer==null){
             log.warn("type: receiveBroker, ResultTxTransfer is null. send Queue, resultTxId: "+resultTx.getId());
             return false;
         }
-
+        resultTx.setBrokerId(brokerId);
         resultTx.setSuccess(success.indexOf("true")==-1 ? true : false);
         resultTxTransfer.setSuccess(success.indexOf("true")==-1 ? true : false);
 
@@ -655,6 +638,14 @@ public class Logging {
             }catch(Exception e){}
         }
 
+        log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
+
+        if(resultTx.getSuccess()!=null){
+            if(resultTx.getSuccess()){
+                return true;
+            }
+        }
+
         save=false;
         while(!save){
             ResultTx verification=null;
@@ -666,8 +657,6 @@ public class Logging {
                 }
             }catch(Exception e){}
         }
-
-        log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
 
         return true;
     }
