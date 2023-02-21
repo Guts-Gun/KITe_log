@@ -15,11 +15,12 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class LogCache {
 
-    @Cacheable(value = "logSendingId", key = "#sendingId", cacheManager = "CacheManager")
-    public SendingInputCache SendingInputCache(Long sendingId, SendingInputCache sendingInputCache){
+    @Cacheable(value = "logSendingId", key = "#Id", cacheManager = "CacheManager")
+    public SendingInputCache SendingInputCache(Long Id, SendingInputCache sendingInputCache){
         return sendingInputCache;
     }
 
-    @CacheEvict(value = "logSendingId", key = "#sendingId", cacheManager = "CacheManager")
+    @CacheEvict(value = "logSendingId", key = "#Id", cacheManager = "CacheManager")
     public void SendingDeleteCache(Long sendingId){}
+
 }
