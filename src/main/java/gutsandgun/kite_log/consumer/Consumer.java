@@ -7,8 +7,10 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Component
 public class Consumer {
@@ -19,14 +21,13 @@ public class Consumer {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 
     @RabbitListener(queues = "${rabbitmq.routing.key.log}")
-    public void consumeLog(String msg) {
-        executorService.submit(() ->{
-            try{
-                logging.LogSave(msg);
-            }
-            catch(Exception e){
-                System.out.println(e);
-            }
-        });
+    public void consumeLog(String msg) throws ExecutionException, InterruptedException {
+        try{
+            Future<?> future = executorService.submit(() ->logging.LogSave(msg));
+            Object result=future.get();
+        }
+        catch(Exception e){
+            throw e;
+        }
     }
 }
