@@ -618,6 +618,7 @@ public class Logging {
         }
 
         Boolean save=false;
+        log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
         if(last.contains("true")){
             log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
             resultTx.setReceiver(transferCache.getReceiver());
