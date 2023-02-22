@@ -500,16 +500,16 @@ public class Logging {
         Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
-        logging=logging.substring(logging.indexOf(",")+2);
-
         String sender=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
 
         String receiver=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
+        
+        String content=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        logging=logging.substring(logging.indexOf(",")+2);
 
-        String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("@"));
+        Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
 
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
