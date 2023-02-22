@@ -630,7 +630,8 @@ public class Logging {
             while(!save){
                 ResultTx verification=null;
                 try{
-                    verification=writeResultTxRepository.saveAndFlush(resultTx);
+                    writeResultTxRepository.saveAndFlush(resultTx);
+                    verification=writeResultTxRepository.findByResultSendingIdAndTxId(sendingId,TxId);
                     save=true;
                     if(verification.getStatus()!=resultTx.getStatus()){
                         save=false;
