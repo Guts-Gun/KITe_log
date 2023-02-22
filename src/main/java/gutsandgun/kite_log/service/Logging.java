@@ -620,7 +620,6 @@ public class Logging {
         Boolean save=false;
         log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
         if(last){
-            log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
             resultTx.setReceiver(transferCache.getReceiver());
             resultTx.setSender(transferCache.getSender());
             resultTx.setContent(transferCache.getContent());
@@ -633,7 +632,7 @@ public class Logging {
                 try{
                     verification=writeResultTxRepository.saveAndFlush(resultTx);
                     save=true;
-                    if(verification.getFailReason()!=resultTx.getFailReason()){
+                    if(verification.getStatus()!=resultTx.getStatus()){
                         save=false;
                     }
                 }catch(Exception e){}
