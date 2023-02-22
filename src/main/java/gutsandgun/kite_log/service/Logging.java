@@ -397,10 +397,6 @@ public class Logging {
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
 
-        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
-            return true;
-        }
-
         Boolean save=false;
 
         if(resultTx.getStatus()==null){
@@ -505,7 +501,7 @@ public class Logging {
 
         String receiver=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
-        
+
         String content=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
 
@@ -662,9 +658,6 @@ public class Logging {
         if(success!=SendingStatus.COMPLETE){
             ResultTxFailure resultTxFailure=new ResultTxFailure();
 
-            if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
-                return true;
-            }
             resultTxFailure.setFailReason(failReason);
 
             resultTxFailure.setUserId(resultTx.getUserId());
@@ -753,10 +746,6 @@ public class Logging {
         }
 
         ResultTxFailure resultTxFailure=new ResultTxFailure();
-
-        if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
-            return true;
-        }
 
         resultTx.setStatus(SendingStatus.FAIL);
 
