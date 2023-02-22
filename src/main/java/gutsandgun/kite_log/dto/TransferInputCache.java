@@ -17,5 +17,7 @@ public class TransferInputCache {
     private String receiver;
 
     private SendingType sendingType;
+
+    private String content;
 }
 

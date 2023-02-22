@@ -340,6 +340,8 @@ public class Logging {
 
         resultTx.setBrokerId(brokerId);
 
+        resultTx.setStatus(SendingStatus.SENDING);
+
         Boolean save=false;
         while(!save){
             ResultTx verification=null;
@@ -401,9 +403,9 @@ public class Logging {
 
         Boolean save=false;
 
-        if(resultTx.getSuccess()==null){
+        if(resultTx.getStatus()==null){
             resultTx.setFailReason(FailReason.USER);
-            resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
+            resultTx.setStatus(SendingStatus.FAIL);
             while(!save){
                 ResultTx verification=null;
                 try{
@@ -416,11 +418,15 @@ public class Logging {
             }
         }
 
+        ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
+
         resultTxFailure.setFailReason(FailReason.USER);
+        resultTxTransfer.setFailReason(FailReason.USER);
 
         resultTxFailure.setUserId(resultTx.getUserId());
 
         resultTxFailure.setTitle(resultTx.getTitle());
+
 
         resultTxFailure.setContent(resultTx.getContent());
 
@@ -434,6 +440,20 @@ public class Logging {
 
         resultTxFailure.setSendingType(sendingType);
 
+        resultTxTransfer.setSuccess(false);
+
+        resultTxTransfer.setSendTime(time);
+
+        resultTxTransfer.setCompleteTime(time);
+
+        resultTxTransfer.setResultTxId(resultTx.getId());
+
+        resultTxTransfer.setSender(resultTx.getSender());
+
+        resultTxTransfer.setReceiver(resultTx.getReceiver());
+
+        resultTxTransfer.setSendingType(resultTx.getSendingType());
+
         save=false;
         while(!save){
             ResultTxFailure verification=null;
@@ -446,6 +466,17 @@ public class Logging {
             }catch(Exception e){}
         }
 
+        save=false;
+        while(!save){
+            ResultTxTransfer verification=null;
+            try{
+                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
+                save=true;
+                if(verification==null){
+                    save=false;
+                }
+            }catch(Exception e){}
+        }
 
         log.info("type: blocking, blocking is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
@@ -469,7 +500,16 @@ public class Logging {
         Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
+        Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        String sender=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        String receiver=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        String content=logging.substring(logging.indexOf(":")+2,logging.indexOf("@"));
 
         ResultSending resultSending=writeResultSendingRepository.findBySendingId(sendingId);
 
@@ -496,11 +536,13 @@ public class Logging {
 
         resultTxTransfer.setSendTime(time);
 
-        resultTxTransfer.setReceiver(resultTx.getReceiver());
+        resultTxTransfer.setReceiver(receiver);
 
-        resultTxTransfer.setSender(resultTx.getSender());
+        resultTxTransfer.setSender(sender);
 
         resultTxTransfer.setSendingType(sendingType);
+
+        resultTxTransfer.setContent(content);
 
         String cacheKey=String.valueOf(brokerId).concat("+").concat(String.valueOf(resultTx.getId()));
 
@@ -525,7 +567,7 @@ public class Logging {
         logging=logging.substring(logging.indexOf("type: receiveBroker"));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        String success=logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        SendingStatus success= SendingStatus.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
         FailReason failReason=null;
@@ -547,6 +589,9 @@ public class Logging {
         logging=logging.substring(logging.indexOf(",")+2);
 
         Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
+        logging=logging.substring(logging.indexOf(",")+2);
+
+        String last= logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
         logging=logging.substring(logging.indexOf(",")+2);
 
         Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
@@ -577,9 +622,13 @@ public class Logging {
         }
 
         Boolean save=false;
-        if(resultTx.getSuccess()==null || !resultTx.getSuccess()){
+        if(last.indexOf("true")!=-1){
+            resultTx.setReceiver(transferCache.getReceiver());
+            resultTx.setSender(transferCache.getSender());
+            resultTx.setContent(transferCache.getContent());
+            resultTx.setSendingType(transferCache.getSendingType());
             resultTx.setBrokerId(brokerId);
-            resultTx.setSuccess(success.indexOf("true")!=-1 ? true : false);
+            resultTx.setStatus(success);
             resultTx.setFailReason(failReason);
             while(!save){
                 ResultTx verification=null;
@@ -607,10 +656,10 @@ public class Logging {
 
         resultTxTransfer.setSendingType(transferCache.getSendingType());
 
-        resultTxTransfer.setSuccess(success.indexOf("true")!=-1 ? true : false);
+        resultTxTransfer.setSuccess(success==SendingStatus.COMPLETE);
         resultTxTransfer.setFailReason(failReason);
 
-        if(success.indexOf("true")==-1){
+        if(success!=SendingStatus.COMPLETE){
             ResultTxFailure resultTxFailure=new ResultTxFailure();
 
             if(writeResultTxFailureRepository.findById(resultTx.getId()).isPresent()) {
@@ -709,7 +758,7 @@ public class Logging {
             return true;
         }
 
-        resultTx.setSuccess(false);
+        resultTx.setStatus(SendingStatus.FAIL);
 
         resultTx.setFailReason(failReason);
         resultTxFailure.setFailReason(failReason);

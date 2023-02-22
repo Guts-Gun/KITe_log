@@ -61,8 +61,10 @@ public class ResultSending extends BaseTimeEntity {
 	/**
 	 * 발송 상태
 	 */
+
 	@Comment("발송 상태")
-	private SendingStatus sendingStatus;
+	@ColumnDefault("1")
+	private SendingStatus sendingStatus = SendingStatus.PENDING;
 
 	/**
 	 * 성공 여부
