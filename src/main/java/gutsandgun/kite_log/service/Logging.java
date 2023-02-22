@@ -460,12 +460,12 @@ public class Logging {
         ResultTx resultTx=writeResultTxRepository.findByResultSendingIdAndTxId(resultSendingId, TxId);
 
         if(resultTx==null){
-            log.warn("type: sendBroker, ResultTx is null. send Queue, TxId: "+TxId);
+            log.warn("type: sendBroker, ResultTx is null. send Queue, TxId: "+TxId+", resultSendingId: "+resultSendingId);
             return false;
         }
 
         if(resultTx.getStatus()!=SendingStatus.SENDING){
-            log.warn("type: sendBroker, ResultTx is not sending. send Queue, TxId: "+TxId);
+            log.warn("type: sendBroker, ResultTx is not sending. send Queue, TxId: "+TxId+", resultSendingId: "+resultSendingId);
             return false;
         }
 
@@ -721,9 +721,13 @@ public class Logging {
 
         ResultSending resultSending=writeResultSendingRepository.findById(resultsendingId).get();
 
-
         if(resultSending==null){
             log.warn("type: complete, ResultSending is null. send Queue, resultSendingId: "+resultsendingId);
+            return false;
+        }
+
+        if(resultSending.getSendingStatus()!=SendingStatus.SENDING){
+            log.warn("type: complete, ResultSending is not sending. send Queue, resultSendingId: "+resultsendingId);
             return false;
         }
 
