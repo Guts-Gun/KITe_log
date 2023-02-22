@@ -19,7 +19,7 @@ spring:
   rabbitmq:
     listener:
       simple:
-        prefetch: 50
+        prefetch: 250
     host: gutsandgun.kro.kr
     port: 11005
     username: gutsandgun
@@ -36,14 +36,14 @@ spring:
     username: root
     password: gutsandgun
     hikari:
-      maximum-pool-size: 100
+      maximum-pool-size: 20
   readdb:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://gutsandgun.kro.kr:12002/read?usessl=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password: gutsandgun
     hikari:
-      maximum-pool-size: 100
+      maximum-pool-size: 20
   jpa:
     hibernate:
       ddl-auto: update  # option type: create, create-drop, update, validate, none
