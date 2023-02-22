@@ -464,6 +464,11 @@ public class Logging {
             return false;
         }
 
+        if(resultTx.getStatus()!=SendingStatus.SENDING){
+            log.warn("type: sendBroker, ResultTx is not sending. send Queue, TxId: "+TxId);
+            return false;
+        }
+
         TransferInputCache resultTxTransfer=new TransferInputCache();
 
         resultTxTransfer.setResultTxId(resultTx.getId());

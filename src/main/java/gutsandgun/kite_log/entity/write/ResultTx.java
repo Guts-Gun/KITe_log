@@ -5,12 +5,11 @@ import gutsandgun.kite_log.type.FailReason;
 import gutsandgun.kite_log.type.SendingStatus;
 import gutsandgun.kite_log.type.SendingType;
 import jakarta.persistence.*;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 @Entity
 @Getter
