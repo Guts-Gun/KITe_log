@@ -42,6 +42,8 @@ public class Logging {
 
     private final RabbitMQProducer rabbitMQProducer;
 
+    private final DBWrite dbWrite;
+
     public void LogSave(String msg) {
         String logging=msg;
         Boolean clear=true;
@@ -240,18 +242,7 @@ public class Logging {
 
         resultTx.setInputTime(sendingInputCache.getInputTime());
 
-        Boolean save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification==null){
-                    save=false;
-                }
-            }catch(Exception e){}
-
-        }
+        ResultTx verification= dbWrite.writeResultTx(resultTx);
 
         log.info("type: input, input is written, resultTx: "+resultTx.getId());
 
@@ -282,18 +273,7 @@ public class Logging {
 
         resultSending.setSendingStatus(SendingStatus.SENDING);
 
-        Boolean save=false;
-        while(!save){
-            ResultSending verification=null;
-            try{
-                verification=writeResultSendingRepository.saveAndFlush(resultSending);
-                save=true;
-                if(verification.getStartTime()!=resultSending.getStartTime()){
-                    save=false;
-                }
-            }catch(Exception e){}
-
-        }
+        ResultSending verification= dbWrite.writeResultSending(resultSending);
 
         log.info("type: sendingStart, sendingStart is updated, resultSendingId: "+resultSending.getId());
 
@@ -342,18 +322,7 @@ public class Logging {
 
         resultTx.setStatus(SendingStatus.SENDING);
 
-        Boolean save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification.getStartTime()!=resultTx.getStartTime()){
-                    save=false;
-                }
-            }catch(Exception e){}
-
-        }
+        ResultTx verification= dbWrite.writeResultTx(resultTx);
 
         log.info("type: pushQueue, pushQueue is updated, resultTxId: "+resultTx.getId());
 
@@ -402,16 +371,7 @@ public class Logging {
         if(resultTx.getStatus()==null){
             resultTx.setFailReason(FailReason.USER);
             resultTx.setStatus(SendingStatus.FAIL);
-            while(!save){
-                ResultTx verification=null;
-                try{
-                    verification=writeResultTxRepository.saveAndFlush(resultTx);
-                    save=true;
-                    if(verification.getFailReason()!=resultTx.getFailReason()){
-                        save=false;
-                    }
-                }catch(Exception e){}
-            }
+            ResultTx verification1= dbWrite.writeResultTx(resultTx);
         }
 
         ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
@@ -450,29 +410,9 @@ public class Logging {
 
         resultTxTransfer.setSendingType(resultTx.getSendingType());
 
-        save=false;
-        while(!save){
-            ResultTxFailure verification=null;
-            try{
-                verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
-                save=true;
-                if(verification==null){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
+        ResultTxFailure verification2= dbWrite.writeResultTxFailure(resultTxFailure);
 
-        save=false;
-        while(!save){
-            ResultTxTransfer verification=null;
-            try{
-                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
-                save=true;
-                if(verification==null){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
+        ResultTxTransfer verification3= dbWrite.writeResultTxTransfer(resultTxTransfer);
 
         log.info("type: blocking, blocking is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
@@ -617,29 +557,6 @@ public class Logging {
             return false;
         }
 
-        Boolean save=false;
-        log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
-        if(last){
-            resultTx.setReceiver(transferCache.getReceiver());
-            resultTx.setSender(transferCache.getSender());
-            resultTx.setContent(transferCache.getContent());
-            resultTx.setSendingType(transferCache.getSendingType());
-            resultTx.setBrokerId(brokerId);
-            resultTx.setStatus(success);
-            resultTx.setFailReason(failReason);
-            while(!save){
-                ResultTx verification=null;
-                try{
-                    writeResultTxRepository.saveAndFlush(resultTx);
-                    verification=writeResultTxRepository.findByResultSendingIdAndTxId(sendingId,TxId);
-                    save=true;
-                    if(verification.getStatus()!=resultTx.getStatus()){
-                        save=false;
-                    }
-                }catch(Exception e){}
-            }
-        }
-
         ResultTxTransfer resultTxTransfer=new ResultTxTransfer();
 
         resultTxTransfer.setResultTxId(transferCache.getResultTxId());
@@ -680,31 +597,23 @@ public class Logging {
 
             resultTxFailure.setBrokerId(brokerId);
 
-            save=false;
-            while(!save){
-                ResultTxFailure verification=null;
-                try{
-                    verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
-                    save=true;
-                    if(verification==null){
-                        save=false;
-                    }
-                }catch(Exception e){}
-            }
+            ResultTxFailure verification2= dbWrite.writeResultTxFailure(resultTxFailure);
         }
 
         resultTxTransfer.setCompleteTime(time);
 
-        save=false;
-        while(!save){
-            ResultTxTransfer verification=null;
-            try{
-                verification=writeResultTxTransferRepository.saveAndFlush(resultTxTransfer);
-                save=true;
-                if(verification.getCompleteTime()!=resultTxTransfer.getCompleteTime()){
-                    save=false;
-                }
-            }catch(Exception e){}
+        ResultTxTransfer verification3= dbWrite.writeResultTxTransfer(resultTxTransfer);
+
+        log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
+        if(last){
+            resultTx.setReceiver(transferCache.getReceiver());
+            resultTx.setSender(transferCache.getSender());
+            resultTx.setContent(transferCache.getContent());
+            resultTx.setSendingType(transferCache.getSendingType());
+            resultTx.setBrokerId(brokerId);
+            resultTx.setStatus(success);
+            resultTx.setFailReason(failReason);
+            ResultTx verification1= dbWrite.writeResultTx(resultTx);
         }
 
         log.info("type: receiveBroker, receiveBroker is updated, resultTxId: "+resultTx.getId()+", resultTxTransfer: "+resultTxTransfer.getId());
@@ -772,29 +681,9 @@ public class Logging {
 
         resultTxFailure.setBrokerId(brokerId);
 
-        Boolean save=false;
-        while(!save){
-            ResultTx verification=null;
-            try{
-                verification=writeResultTxRepository.saveAndFlush(resultTx);
-                save=true;
-                if(verification.getFailReason()!=resultTx.getFailReason()){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
+        ResultTx verification1= dbWrite.writeResultTx(resultTx);
 
-        save=false;
-        while(!save){
-            ResultTxFailure verification=null;
-            try{
-                verification=writeResultTxFailureRepository.saveAndFlush(resultTxFailure);
-                save=true;
-                if(verification==null){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
+        ResultTxFailure verification2= dbWrite.writeResultTxFailure(resultTxFailure);
 
         log.info("type: missingSendingId, missingSendingId is updated, resultTxId: "+resultTx.getId()+", resultTxFailure: "+resultTxFailure.getId());
 
@@ -841,17 +730,7 @@ public class Logging {
 
         resultSending.setCompleteTime(completeTime);
 
-        Boolean save=false;
-        while(!save){
-            ResultSending verification=null;
-            try{
-                verification=writeResultSendingRepository.saveAndFlush(resultSending);
-                save=true;
-                if(verification.getCompleteTime()!=resultSending.getCompleteTime()){
-                    save=false;
-                }
-            }catch(Exception e){}
-        }
+        ResultSending verification= dbWrite.writeResultSending(resultSending);
 
         log.info("type: complete, complete is updated, resultSendingId: "+resultSending.getId());
 
