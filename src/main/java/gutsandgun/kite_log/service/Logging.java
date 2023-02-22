@@ -587,7 +587,7 @@ public class Logging {
         Long TxId= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
-        String last= logging.substring(logging.indexOf(":")+2,logging.indexOf(","));
+        Boolean last= Boolean.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf(",")));
         logging=logging.substring(logging.indexOf(",")+2);
 
         Long time= Long.valueOf(logging.substring(logging.indexOf(":")+2,logging.indexOf("@")));
@@ -619,7 +619,7 @@ public class Logging {
 
         Boolean save=false;
         log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
-        if(last.contains("true")){
+        if(last){
             log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
             resultTx.setReceiver(transferCache.getReceiver());
             resultTx.setSender(transferCache.getSender());
