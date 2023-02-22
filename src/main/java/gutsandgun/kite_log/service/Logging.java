@@ -619,6 +619,7 @@ public class Logging {
 
         Boolean save=false;
         if(last.indexOf("true")!=-1){
+            log.info("type: receiveBroker, last is "+last+", resultTx: "+resultTx.getId()+", brokerId: "+brokerId);
             resultTx.setReceiver(transferCache.getReceiver());
             resultTx.setSender(transferCache.getSender());
             resultTx.setContent(transferCache.getContent());
