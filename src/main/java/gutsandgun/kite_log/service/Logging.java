@@ -488,10 +488,6 @@ public class Logging {
             return false;
         }
 
-        if(writeResultTxTransferRepository.findByBrokerIdAndResultTxId(brokerId,resultTx.getId())!=null) {
-            return true;
-        }
-
         TransferInputCache resultTxTransfer=new TransferInputCache();
 
         resultTxTransfer.setResultTxId(resultTx.getId());
