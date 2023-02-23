@@ -190,8 +190,19 @@ public class Logging {
         if(sendingCache==null){
             log.warn("type: genSendingId, SendingInputCache is null. generating..., sendingId: "+resultSending.getSendingId());
             while(sendingCache==null){
-                //logCache.SendingDeleteCache(resultSending.getSendingId());
+                logCache.SendingDeleteCache(resultSending.getSendingId());
                 sendingCache=logCache.SendingInputCache(resultSending.getSendingId(), sendingInputCache);
+            }
+            log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
+        }
+
+        sendingCache=logCache.SendingInputBackup(resultSending.getSendingId(), sendingInputCache);
+
+        if(sendingCache==null){
+            log.warn("type: genSendingId, SendingInputCache is null. generating..., sendingId: "+resultSending.getSendingId());
+            while(sendingCache==null){
+                logCache.SendingDeleteCacheBackup(resultSending.getSendingId());
+                sendingCache=logCache.SendingInputBackup(resultSending.getSendingId(), sendingInputCache);
             }
             log.warn("type: getSendingId, SendingInputCache null is fixed, sendingId: "+resultSending.getSendingId());
         }
@@ -221,7 +232,12 @@ public class Logging {
 
         if(sendingInputCache==null){
             log.warn("type: input, SendingInputCache is null. send Queue, sendingId: "+sendingId);
-            return false;
+            sendingInputCache=logCache.SendingInputBackup(sendingId,null);
+            if(sendingInputCache==null){
+                log.warn("type: input, SendingInputBackup is null. send Queue, sendingId: "+sendingId);
+                return false;
+            }
+
         }
 
         while(true){

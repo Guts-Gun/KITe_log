@@ -25,6 +25,14 @@ public class LogCache {
     @CacheEvict(value = "logSendingId", key = "#Id", cacheManager = "CacheManager")
     public void SendingDeleteCache(Long sendingId){}
 
+    @Cacheable(value = "backSendingId", key = "#Id", cacheManager = "CacheManager", unless="#result == null")
+    public SendingInputCache SendingInputBackup(Long Id, SendingInputCache sendingInputCache){
+        return sendingInputCache;
+    }
+
+    @CacheEvict(value = "backSendingId", key = "#Id", cacheManager = "CacheManager")
+    public void SendingDeleteCacheBackup(Long sendingId){}
+
     @Cacheable(value = "transferId", key = "#Id", cacheManager = "CacheManager", unless="#result == null")
     public TransferInputCache TransferInputCache(String Id, TransferInputCache resultTxTransfer){
         return resultTxTransfer;
